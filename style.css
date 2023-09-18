@@ -1,27 +1,43 @@
 html, body{
 
-    background-color: #232323;
+    background-color: #2f2f2f;
     border: 0;
     padding: 0;
     margin: 0;
+    height: 100%;
+}
+
+.saveBox {
+
+    background-color: #3a3a3a;
+    float: left;
+    height: 100%;
+    padding-left: 8px;
+    padding-right: 8px;   
 
 }
 
-.topBox{
+.saveBox ul{
 
+    padding: 0;
     margin: 0;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    background-color: #373737;
-    border-bottom : 2px solid #aeaeae;
+    flex-direction: column;
 
 }
 
-h1{
+.saveBox li{
 
-    margin: 0;
-    text-align: center;
-    font-size: 1.2rem;
-    color: white;
+    list-style: none;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    border-bottom: 1px solid black;
+
+}
+
+.filter-white{
+
+    width: 35px;
+    height : auto;    
+    filter: invert(83%) sepia(0%) saturate(7489%) hue-rotate(113deg) brightness(103%) contrast(99%);
 
 }
