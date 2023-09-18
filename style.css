@@ -27,6 +27,7 @@ html, body{
 
 .saveBox li{
 
+     
     list-style: none;
     padding-bottom: 8px;
     padding-top: 8px;
@@ -34,10 +35,93 @@ html, body{
 
 }
 
-.filter-white{
-
+.filter-save{
+       
     width: 35px;
-    height : auto;    
+    height : auto;
     filter: invert(83%) sepia(0%) saturate(7489%) hue-rotate(113deg) brightness(103%) contrast(99%);
 
+}
+
+.plansBox{
+
+    height: 650px;
+    width: 380px;    
+    float: left;
+    margin-left: 2px;
+    /*background-color: red;*/
+    border: 2px solid #3a3a3a;
+
+}
+
+.plansBox h1{
+
+    padding: 0;
+    margin: 0;
+    padding-top: 10px;
+    font-family: system-ui;
+    font-size: 1.2rem;
+    text-align: center;
+    color: #d9d9d9;
+    height: 40px;
+
+}
+
+.plansAddRemoveBox{
+
+    padding-left: 3px;    
+    height: 45px;
+    background-color: #3a3a3a;
+    display: flex;
+
+}
+
+.plansAddRemoveBox ul{
+
+    width: 60px;
+    margin: 0;
+    padding: 0;
+    margin-top: 6px;    
+    display: flex;
+    justify-content: flex-start;
+    
+
+}
+
+.plansAddRemoveBox li{
+
+    padding: 0;
+    height: 27px;
+    width: 27px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    list-style: none;    
+    margin-right: 4px;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+}
+
+.filter-white{
+       
+    height: 25px;
+    width: 25px;
+    filter: invert(83%) sepia(0%) saturate(7489%) hue-rotate(113deg) brightness(103%) contrast(99%);    
+
+}
+
+.plansSearchBar{
+
+    margin: 0;
+    padding: 0;
+    width: 290px;
+    margin-top: 6px; 
+    padding-left: 5px;    
+    margin-left: auto;
+    height: 27px;
+    background-color: #1a1a1a;
+    border:0;    
+    border-radius: 8px;
+    float: right;
+    margin-right: 7px;
 }
