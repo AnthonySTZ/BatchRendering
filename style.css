@@ -7,11 +7,17 @@ html, body{
     
 }
 
+.mainTable{
+
+    width: 1920px;
+    height: 1080px;
+
+}
+
 
 .saveBox {
 
     background-color: #3a3a3a;
-    float: left;
     height: 1010px;
     padding-left: 8px;
     padding-right: 8px;   
@@ -48,7 +54,6 @@ html, body{
 
     height: 650px;
     width: 380px;    
-    float: left;
     margin-left: 2px;
     border: 2px solid #3a3a3a;
 
@@ -150,8 +155,7 @@ html, body{
 .passesBox{
 
     height: 650px;
-    width: 900px;    
-    float: left;
+    width: 900px; 
     margin-left: 2px;
     border: 2px solid #3a3a3a;
 
@@ -236,8 +240,7 @@ html, body{
 .slavesBox{
 
     height: 300px;
-    width: 1285px;    
-    float: left;
+    width: 1285px;   
     margin-left: 2px;
     margin-top: 2px;
     border: 2px solid #3a3a3a;
@@ -260,8 +263,7 @@ html, body{
 .taskBox{
 
     height: 1010px;
-    width: 540px;    
-    float: left;
+    width: 540px;  
     margin-left: 2px;
     border: 2px solid #3a3a3a;
 

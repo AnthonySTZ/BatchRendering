@@ -2,192 +2,213 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Arnold Rendering</title>
+    <title>Batch Rendering</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="saveBox">
 
-        <ul>
-            <li><img src="res/open_new_icon.svg" class="filter-save"/></li>
-            <li><img src="res/save_icon.svg" class="filter-save"/></li>
-            <li><img src="res/open_icon.svg" class="filter-save"/></li>
-        </ul>
+    <table class="mainTable">
 
-    </div>
-    <div class="plansBox">
+        <tr> <!-- First Row -->
 
-        <h1>Plans</h1>
-        <div class="plansAddRemoveBox">
+            <td rowspan="2"> <!-- Save Column -->
+
+                <div class="saveBox">
+
+                    <ul>
+                        <li><img src="res/open_new_icon.svg" class="filter-save"/></li>
+                        <li><img src="res/save_icon.svg" class="filter-save"/></li>
+                        <li><img src="res/open_icon.svg" class="filter-save"/></li>
+                    </ul>
+        
+                </div>
+
+            </td>
+
+            <td> <!-- Plans Column -->
+
+                <div class="plansBox">
+
+                    <h1>Plans</h1>
+                    <div class="plansAddRemoveBox">
+                        
+                        <ul>
+                            <li><img src="res/add_icon.svg" class="filter-white"/></li>
+                            <li><img src="res/minus_icon.svg" class="filter-white"/></li>                
+                        </ul>
+                        <input type="text" placeholder="Search.." class="plansSearchBar">
+        
+                    </div>
+                    <div class="tableDiv">
+                        <table class="tableList">
+        
+                            <tr>
+                                <th>Icon</th><th></th>
+                                <th>Name</th>
+                            </tr>
+                            <tr class="tableSeparation">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><img src="res/maya_icon.png" class="softwareIcon"/></td><td></td>
+                                <td>BattleOfMonCul.BaseColor</td>
+                            </tr>
+        
+                        </table>
+                    </div>
+                </div>
+
+            </td>
+
+            <td> <!-- Passes/AOVs Column -->
+
+                <div class="passesBox">
+
+                    <h1>Passes / AOVs</h1>
+        
+                    <div class="plansAddRemoveBox">
+                        
+                        <ul>
+                            <li><img src="res/add_icon.svg" class="filter-white"/></li>
+                            <li><img src="res/minus_icon.svg" class="filter-white"/></li>                
+                        </ul>
+                        <input type="text" placeholder="Search.." class="plansSearchBar">
+        
+                    </div>
+                    <div class="tableDiv">
+                        <table class="tableList">
+        
+                            <tr>
+                                <th>Icon</th><th></th>                                
+                                <th>Name</th><th></th>
+                                <th>Status</th><th></th>  
+                                <th>Task&nbspProgress</th><th></th>  
+                                <th>Frames</th>
+                            </tr>
+                            <tr class="tableSeparation">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><img src="res/maya_icon.png" class="softwareIcon"/></td><td></td>
+                                
+                                <td>BattleOfMonCul.BaseColor</td><td></td>
+                                <td>InProgress</td><td></td>
+                                <td>50%</td><td></td>
+                                <td>1-100</td>
+                            </tr>
+        
+                        </table>
+                    </div>
+                </div>
+
+            </td>
+
+            <td rowspan="2"> <!-- Tasks Column -->
+
+                <div class="taskBox">
+
+                    <h1>Tasks</h1>
+        
+                    <div class="plansAddRemoveBox">
+                        
+                        <ul>
+                            <li><img src="res/add_icon.svg" class="filter-white"/></li>
+                            <li><img src="res/minus_icon.svg" class="filter-white"/></li>                
+                        </ul>
+                        <input type="text" placeholder="Search.." class="plansSearchBar">
+        
+                    </div>
+                    <div class="tableDiv">
+                        <table class="tableList">
+        
+                            <tr>
+                                <th>Name</th>
+                                <th></th>
+                                <th>Frame</th>
+                                <th></th>
+                                <th>Status</th>
+                            </tr>
+                            <tr class="tableSeparation">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>BattleOfMonCul.BaseColor</td>
+                                <td></td>
+                                <td>1-100</td>
+                                <td></td>
+                                <td>Rendering</td>
+                            </tr>
+        
+                        </table>
+                    </div>
+                </div>
+
+            </td>
+
+        </tr>
+
+        <tr> <!-- Second Row -->
+
+            <td colspan="2"> <!-- Slaves Column -->
+
+                <div class="slavesBox">
+
+                    <h1>Slaves</h1>
+        
+                    <div class="plansAddRemoveBox">
+                        
+                        <ul>
+                            <li><img src="res/add_icon.svg" class="filter-white"/></li>
+                            <li><img src="res/minus_icon.svg" class="filter-white"/></li>                
+                        </ul>
+                        <input type="text" placeholder="Search.." class="plansSearchBar">
+        
+                    </div>
+                    <div class="tableDiv">
+                        <table class="tableList">
+        
+                            <tr>
+                                <th>Name</th><th></th>
+                                <th>Frame</th><th></th>
+                                <th>Status</th>
+                            </tr>
+                            <tr class="tableSeparation">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>BattleOfMonCul.BaseColor</td><td></td>
+                                <td>1-100</td><td></td>
+                                <td>Rendering</td>
+                            </tr>
+        
+                        </table>
+                    </div>
+                </div>
+
+            </td>
             
-            <ul>
-                <li><img src="res/add_icon.svg" class="filter-white"/></li>
-                <li><img src="res/minus_icon.svg" class="filter-white"/></li>                
-            </ul>
-            <input type="text" placeholder="Search.." class="plansSearchBar">
+        </tr>
 
-        </div>
-        <div class="tableDiv">
-            <table class="tableList">
-
-                <tr>
-                    <th>Icon</th>
-                    <th></th>
-                    <th>Name</th>
-                </tr>
-                <tr class="tableSeparation">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><img src="res/maya_icon.png" class="softwareIcon"/></td>
-                    <td></td>
-                    <td>BattleOfMonCul.BaseColor</td>
-                </tr>
-
-            </table>
-        </div>
-    </div>
-
-    <div class="passesBox">
-
-        <h1>Passes / AOVs</h1>
-
-        <div class="plansAddRemoveBox">
-            
-            <ul>
-                <li><img src="res/add_icon.svg" class="filter-white"/></li>
-                <li><img src="res/minus_icon.svg" class="filter-white"/></li>                
-            </ul>
-            <input type="text" placeholder="Search.." class="plansSearchBar">
-
-        </div>
-        <div class="tableDiv">
-            <table class="tableList">
-
-                <tr>
-                    <th>Icon</th>
-                    <th></th>
-                    <th>Name</th>
-                    <th></th>
-                    <th>Status</th>
-                    <th></th>
-                    <th>Task&nbspProgress</th>
-                    <th></th>
-                    <th>Frames</th>
-                </tr>
-                <tr class="tableSeparation">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><img src="res/maya_icon.png" class="softwareIcon"/></td>
-                    <td></td>
-                    <td>BattleOfMonCul.BaseColor</td>
-                    <td></td>
-                    <td>InProgress</td>
-                    <td></td>
-                    <td>50%</td>
-                    <td></td>
-                    <td>1-100</td>
-                </tr>
-
-            </table>
-        </div>
-    </div>
-
-    <div class="slavesBox">
-
-        <h1>Slaves</h1>
-
-        <div class="plansAddRemoveBox">
-            
-            <ul>
-                <li><img src="res/add_icon.svg" class="filter-white"/></li>
-                <li><img src="res/minus_icon.svg" class="filter-white"/></li>                
-            </ul>
-            <input type="text" placeholder="Search.." class="plansSearchBar">
-
-        </div>
-        <div class="tableDiv">
-            <table class="tableList">
-
-                <tr>
-                    <th>Name</th>
-                    <th></th>
-                    <th>Frame</th>
-                    <th></th>
-                    <th>Status</th>
-                </tr>
-                <tr class="tableSeparation">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>BattleOfMonCul.BaseColor</td>
-                    <td></td>
-                    <td>1-100</td>
-                    <td></td>
-                    <td>Rendering</td>
-                </tr>
-
-            </table>
-        </div>
-    </div>
-
-
-    <div class="taskBox">
-
-        <h1>Tasks</h1>
-
-        <div class="plansAddRemoveBox">
-            
-            <ul>
-                <li><img src="res/add_icon.svg" class="filter-white"/></li>
-                <li><img src="res/minus_icon.svg" class="filter-white"/></li>                
-            </ul>
-            <input type="text" placeholder="Search.." class="plansSearchBar">
-
-        </div>
-        <div class="tableDiv">
-            <table class="tableList">
-
-                <tr>
-                    <th>Name</th>
-                    <th></th>
-                    <th>Frame</th>
-                    <th></th>
-                    <th>Status</th>
-                </tr>
-                <tr class="tableSeparation">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>BattleOfMonCul.BaseColor</td>
-                    <td></td>
-                    <td>1-100</td>
-                    <td></td>
-                    <td>Rendering</td>
-                </tr>
-
-            </table>
-        </div>
-    </div>
+    </table>
 </body>
 </html>
