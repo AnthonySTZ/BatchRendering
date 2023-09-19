@@ -4,14 +4,15 @@ html, body{
     border: 0;
     padding: 0;
     margin: 0;
-    height: 100%;
+    
 }
+
 
 .saveBox {
 
     background-color: #3a3a3a;
     float: left;
-    height: 100%;
+    height: 1010px;
     padding-left: 8px;
     padding-right: 8px;   
 
@@ -49,7 +50,6 @@ html, body{
     width: 380px;    
     float: left;
     margin-left: 2px;
-    /*background-color: red;*/
     border: 2px solid #3a3a3a;
 
 }
@@ -150,7 +150,7 @@ html, body{
 .passesBox{
 
     height: 650px;
-    width: 1100px;    
+    width: 900px;    
     float: left;
     margin-left: 2px;
     border: 2px solid #3a3a3a;
@@ -230,5 +230,52 @@ html, body{
 
     height: 2px;
     background-color: rgba(0, 0, 0, 0);
+
+}
+
+.slavesBox{
+
+    height: 300px;
+    width: 1285px;    
+    float: left;
+    margin-left: 2px;
+    margin-top: 2px;
+    border: 2px solid #3a3a3a;
+
+}
+
+.slavesBox h1{
+
+    padding: 0;
+    margin: 0;
+    padding-top: 10px;
+    font-family: system-ui;
+    font-size: 1.2rem;
+    text-align: center;
+    color: #d9d9d9;
+    height: 40px;
+
+}
+
+.taskBox{
+
+    height: 1010px;
+    width: 540px;    
+    float: left;
+    margin-left: 2px;
+    border: 2px solid #3a3a3a;
+
+}
+
+.taskBox h1{
+
+    padding: 0;
+    margin: 0;
+    padding-top: 10px;
+    font-family: system-ui;
+    font-size: 1.2rem;
+    text-align: center;
+    color: #d9d9d9;
+    height: 40px;
 
 }
