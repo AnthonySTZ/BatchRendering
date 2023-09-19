@@ -127,56 +127,6 @@ html, body{
     color: #d9d9d9;
 }
 
-.plansIconNameList{
-
-    padding: 0;
-    margin: 0;
-    margin-top: 3px;
-    margin-left: 2px;
-    margin-right: 2px;
-    height:32px;
-    display: flex;
-    justify-content: flex-start;
-
-}
-
-.plansIconNameList li{
-
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    background-color: #3a3a3a;
-    margin-right: 5px;
-
-}
-
-.plansIconNameList li p{
-
-    padding: 0;
-    margin: 0;
-    text-align: center;
-    padding-top: 6px;
-    padding-right: 10px;
-    padding-left: 10px;
-    color: #d9d9d9;
-
-
-}
-
-.plansIconNameList li:last-of-type{
-
-    width: 100%;
-    margin-right: 0;
-
-
-}
-
-.plansIconNameList li:last-of-type p {
-
-    text-align: left;
-
-
-}
 
 .plansList{
 
@@ -189,42 +139,96 @@ html, body{
     
 }
 
-.plansList li{
-
-    padding: 0;
-    list-style: none;
-    height: 24px;
-    margin-left: 2px;
-    margin-right: 2px;
-    background-color: #1a1a1a;
-
-}
-
-.plansList li ul{
-
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: flex-start;
-    padding-left: 12px;
-
-}
-
-
-.plansList li ul li p{
-
-    padding: 0;
-    margin: 0;
-    padding-top: 3px;
-    padding-left: 25px;
-    color: #d9d9d9;
-
-}
-
 .softwareIcon{
 
     width: 18px;
     padding-top: 2px;
     height: auto;
+
+}
+
+.passesBox{
+
+    height: 650px;
+    width: 1100px;    
+    float: left;
+    margin-left: 2px;
+    border: 2px solid #3a3a3a;
+
+}
+
+.passesBox h1{
+
+    padding: 0;
+    margin: 0;
+    padding-top: 10px;
+    font-family: system-ui;
+    font-size: 1.2rem;
+    text-align: center;
+    color: #d9d9d9;
+    height: 40px;
+
+}
+
+.tableDiv{
+
+    padding: 0;
+    margin: 0;
+    padding-top: 2px;
+    padding-left: 2px;
+    padding-right: 2px;
+
+}
+
+.tableList{
+
+    padding: 0;
+    margin: 0;
+    border-spacing: 0;
+    width: 100%;
+    
+
+}
+
+.tableList th:not(:empty){
+
+    padding: 0;
+    margin: 0;
+    height:32px;
+    background-color: #3a3a3a;
+    color: #d9d9d9;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-family: system-ui;
+    font-weight: normal;
+
+}
+
+.tableList td{
+
+    background-color: #1a1a1a;
+    color: #d9d9d9;
+    font-family: system-ui;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+.tableList th:empty, td:empty{
+
+    max-width: 2px;
+
+}
+
+.tableList td:empty{
+
+    background-color: #1a1a1a;
+
+}
+
+.tableSeparation td:empty{
+
+    height: 2px;
+    background-color: rgba(0, 0, 0, 0);
 
 }
