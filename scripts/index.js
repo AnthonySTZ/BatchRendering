@@ -59,12 +59,80 @@ function colorEvenRow(table){
 
 }
 
+// All table variables
 const plansTable = document.querySelector("#plansTable");
 const passesTable = document.querySelector("#passesTable");
 const taskTable = document.querySelector("#taskTable");
 const slavesTable = document.querySelector("#slavesTable");
 
+// Color row on startup
 colorEvenRow(plansTable);
 colorEvenRow(passesTable);
 colorEvenRow(taskTable);
 colorEvenRow(slavesTable);
+
+// Color by Status
+function colorAllTexts(nodes, color){
+
+    for(let j = 0; j < nodes.length; j++){
+                
+        if (nodes[j].nodeName.toLowerCase() === "td"){
+
+            nodes[j].style.color = color; 
+
+        } 
+
+    }
+
+}
+
+function colorStatus(nodes){
+
+    console.log(nodes);
+
+    for(let j = 0; j < nodes.length; j++){
+                
+        if (nodes[j].className === "Status"){
+            
+            if (nodes[j].innerText === "Queued"){
+
+                colorAllTexts(nodes, "#479449");//White
+                return;
+
+            } 
+
+            if (nodes[j].innerText === "Rendering"){ //Rendering
+
+                colorAllTexts(nodes, "#95ff8f"); //Light green
+                return;
+
+            }
+
+            
+            colorAllTexts(nodes, "#d9d9d9"); //Green
+            return;
+
+        }
+
+    }
+
+
+}
+
+function colorByStatus(table){
+
+    for (let i=2; i < table.rows.length; i++){
+
+        let nodes = table.rows[i].childNodes;
+
+        colorStatus(nodes);
+
+
+    }
+
+
+}
+
+colorByStatus(passesTable);
+colorByStatus(taskTable);
+colorByStatus(slavesTable);
