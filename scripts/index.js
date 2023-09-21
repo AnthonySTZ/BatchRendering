@@ -66,53 +66,67 @@ function colorEvenRow(table){
 
 }
 
+// Clear Table
+function clearTable(table){
+    
+    const rowsNb = table.rows.length
+    
+    for (let i = 2; i < rowsNb; i++){ //REMOVE ALL ROWS
+        table.deleteRow(-1);
+    }
+    
+}
 
-// Color row on startup
-colorEvenRow(plansTable);
-colorEvenRow(passesTable);
-colorEvenRow(taskTable);
-colorEvenRow(slavesTable);
+clearTable(passesTable); //Clear Table
 
+baseColorMap = new Map(); // Une row dans un tableau, ici PassesTable
+baseColorMap.set("Name", "BaseColor.bc");
+baseColorMap.set("Status", "Rendering");
+baseColorMap.set("Progress", "80% (80/100)");
+baseColorMap.set("Frames", "1-100");
+passesList = [baseColorMap];
 
-//Create Map for all table properties 
-function createTableMap(table){
+depthMap = new Map(); // Une row dans un tableau, ici PassesTable
+depthMap.set("Name", "depth.z");
+depthMap.set("Status", "Completed");
+depthMap.set("Progress", "100% (100/100)");
+depthMap.set("Frames", "1-100");
+passesList.push(depthMap);
 
-    let tableArray = []
-    let nodesPropertiesMap = new Map();
-    let nodes = table.rows[0].childNodes;
-    let properties;
+// Create Rows
+function createRow(propertiesMap){
+    
+    let row = document.createElement("tr");
+    
+    for (let [key, value] of propertiesMap){
+        
+        let cell = document.createElement("td");
+        cell.innerText = value;
+        row.appendChild(cell);
+        row.appendChild(document.createElement("td")); //Cellule vide
+        
+    }
+    
+    return row;
+    
+}
 
-    for (let i=0; i < nodes.length; i++){ //Create Map of all index properties, ex : {1:"Icon", 4:"Name", 7:"Status"} 
+function createRows(table, rowsList){
 
-        properties = nodes[i].innerText;
-        if (properties != undefined){
-            if (properties.length > 0)
-            nodesPropertiesMap.set(i, properties);
+    let row;
 
-        }
+    for (let i of rowsList){
+
+        row = createRow(i);
+        table.appendChild(row);
 
     }
-
-
-    for (let i=2; i < table.rows.length; i++){ //Create list of Properties Map for all rows in table 
-
-        let map = new Map();
-
-        for(let [key, value] of nodesPropertiesMap){
-
-            map.set(value, table.rows[i].childNodes[key])
-
-        }
-
-        tableArray.push(map);
-
-    }
-
-    return tableArray;
 
 }
 
-// Color by Status
+createRows(passesTable, passesList);
+
+// Color Row by Status
 function colorAllTexts(nodes, color){
 
     
@@ -129,38 +143,42 @@ function colorAllTexts(nodes, color){
 
 }
 
-function colorByStatus(table, array){
+function colorByStatus(table, rowList){
 
-    for(let i = 0; i < array.length; i++){
+    let status;
 
+    for (let i = 0; i < rowList.length; i++){
+
+        status = rowList[i].get("Status");
         nodes = table.rows[i+2].childNodes;
-        console.log(array[i].get("Status").innerText);
 
-        if (array[i].get("Status").innerText === "Queued"){
+        if (status === "Queued"){
 
-            colorAllTexts(nodes, "#479449"); //Green
+            colorAllTexts(nodes, "#939393"); //Grey
             
-        } else if (array[i].get("Status").innerText === "Rendering"){
+        } else if (status === "Rendering"){
 
-            colorAllTexts(nodes, "#95ff8f"); //Light green            
+            colorAllTexts(nodes, "#EE9616"); //Orange         
             
+        } else if (status === "Completed"){
+
+            colorAllTexts(nodes, "#95ff8f"); //Green
+
         } else {
 
-            colorAllTexts(nodes, "#d9d9d9"); //White
+            colorAllTexts(nodes, "#E74D31") //Red
 
         }
-        
-        
-        
+
+
     }
+
 
 }
 
-passesArray = createTableMap(passesTable);
-taskArray = createTableMap(taskTable);
-slavesArray = createTableMap(slavesTable);
+colorByStatus(passesTable, passesList);
 
-
-colorByStatus(passesTable, passesArray);
-colorByStatus(taskTable, taskArray);
-colorByStatus(slavesTable, slavesArray);
+colorEvenRow(plansTable);
+colorEvenRow(passesTable);
+colorEvenRow(taskTable);
+colorEvenRow(slavesTable);

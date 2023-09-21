@@ -1,1 +1,7 @@
-use table layout with colspan and rowspan
+- JS : créer un hashMap pour les lignes et ensuite les afficher à l'écran donc remove les lignes en HTML à part le titre des colonnes
+
+- Ajouter une ligne
+-> ouvrir une nouvelle fenêtre pour les propriétés 
+
+- Selectionner une ligne 
+-> pouvoir remove cette ligne
