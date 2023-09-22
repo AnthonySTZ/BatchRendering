@@ -10,6 +10,9 @@ const taskTable = document.querySelector("#taskTable");
 const slavesTable = document.querySelector("#slavesTable");
 
 
+const spawn = require("child_process").spawn; //Create spawn for python script
+
+
 function popupwindow(url, title, w, h) { // Open a new centered window
     var left = (screen.width/2)-(w/2);
     var top = (screen.height/2)-(h/2);
@@ -17,21 +20,28 @@ function popupwindow(url, title, w, h) { // Open a new centered window
   } 
 
 // Save Box Buttons Events
-openNewBtn.addEventListener("click", () => {
+openNewBtn.addEventListener("click", () => { //Open New Button
 
     alert("New File");
     
 });
 
-saveBtn.addEventListener("click", () => {
+saveBtn.addEventListener("click", () => { //Save Button
 
-    var win = popupwindow("popups/savePopup.html", "Save File", 400, 800);
+    const saveProcess = spawn('python',["scripts/save.py"]);
+    saveProcess.stdout.on('data', (data) => {
+        console.log(data.toString('utf8'));
+    });
+   
     
 });
 
-openBtn.addEventListener("click", () => {
+openBtn.addEventListener("click", () => { //Open Button
 
-    var win = popupwindow("popups/openPopup.html", "Open File", 400, 800);
+    const openProcess = spawn('python',["scripts/open.py"]);
+    openProcess.stdout.on('data', (data) => {
+        console.log(data.toString('utf8'));
+    });
     
 
 });
