@@ -152,19 +152,19 @@ let tasksList = [
 // Create rowsList for Slaves Table
 let slaves1Values = [
     ["Machine", "Machine 1"],
-    ["Frames", "1-100"],
+    ["Frames", "None"],
     ["Status", "Offline"]
 ];
 
 let slaves2Values = [
     ["Machine", "Machine 2"],
-    ["Frames", "1-100"],
+    ["Frames", "None"],
     ["Status", "Offline"]
 ];
 
 let slaves3Values = [
     ["Machine", "Machine 3"],
-    ["Frames", "1-100"],
+    ["Frames", "1-100 (50%)"],
     ["Status", "Rendering"]
 ];
 
@@ -359,14 +359,9 @@ const spawn = require("child_process").spawn; //Create spawn for python script
 openNewBtn.addEventListener("click", () => { //Open New Button Popup
 
 
-    const response = confirm("Open a new file ?");
-    if (response){
+    clearAllLists();
+    clearAllTables(allTables);
 
-        clearAllLists();
-        clearAllTables(allTables);
-
-    }
-    
     
 });
 
@@ -472,5 +467,43 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
     }, true);
 
     
-    
+});
+
+slavesAddBtn.addEventListener("click", () => { //Add Slave machine
+
+    let addWindow = popupwindow("popups/slavesPropertiesPopup.html", "Porperties", 400, 200); //400*200
+
+    addWindow.addEventListener("load", () => { //Wait for the Add window to load 
+
+        const slaveInput = addWindow.document.querySelector("#slaveInput");
+        const addAcceptBtn = addWindow.document.querySelector("#acceptBtn");
+
+        addAcceptBtn.addEventListener("click", () => { //Accept
+
+            const allInputs = [slaveInput];
+
+            if(!checkAllInputs(allInputs)){ //Check if all inputs are filled
+
+                addWindow.close();
+                
+                let name = slaveInput.value;
+
+                let row = [
+                    ["Machine", name],
+                    ["Frame", "None"],
+                    ["Status", "Offline"]
+                ];
+
+                const newRow = new Map(row);
+                slavesList.push(newRow);
+                clearTable(slavesTable);
+                createRows(slavesTable, slavesList);
+                colorAllTables([slavesTable], [slavesList]);
+
+            }
+
+        });
+
+    }, true);
+
 });
