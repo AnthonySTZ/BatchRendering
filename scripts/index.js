@@ -424,25 +424,24 @@ function checkInput(input){
 
 plansAddBtn.addEventListener("click", () => { //Add plans row Button
 
-    let addWindow = popupwindow("popups/plansPropertiesPopup.html", "Porperties", 400, 200);
+    let addWindow = popupwindow("popups/plansPropertiesPopup.html", "Porperties", 400, 200); //400*200
 
     addWindow.addEventListener("load", () => { //Wait for the Add window to load 
 
-        const softwareInput = addWindow.document.querySelector("#softwareInput");
-        const nameInput = addWindow.document.querySelector("#nameInput");
+        const fileInput = addWindow.document.querySelector("#fileInput");
         const addAcceptBtn = addWindow.document.querySelector("#acceptBtn");
 
         addAcceptBtn.addEventListener("click", () => { //Accept
 
-            const allInputs = [softwareInput, nameInput];
+            const allInputs = [fileInput];
 
             if(!checkAllInputs(allInputs)){ //Check if all inputs are filled
 
                 addWindow.close();
 
-                let row = [
-                    ["Software", softwareInput.value],
-                    ["Name", nameInput.value]
+                let row = [ // !!!!!!!!!!!!!!!!! Tu dois get les info du fichier .ass pour le name 
+                    ["Software", "Maya"],
+                    ["Name", "Test"]
                 ];
 
                 const newRow = new Map(row);

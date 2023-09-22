@@ -8,13 +8,17 @@
     </head>
     <body>
         <div class="mainDiv">
-            <p id="softwareText" class="text">Software : </p>
-            <input type="text" id="softwareInput" class="input"></input>
+            <p id="fileText" class="text">Arnold file : </p>
+            <button class="file_btn" id="fileBtn"><img src="../res/file_icon.svg"/></button> <!-- Fake button -->
+            <input type="file" style="display:none;" id="fileRealBtn" accept=".ass"/> <!-- Button caché -->
 
-            <p id="nameText" class="text">Name : </p>
-            <input type="text" id="nameInput" class="input"></input>   
+            <input type="text" id="fileInput" class="input"></input>
                      
-            <div class="acceptDiv" ><button id="acceptBtn">Accept</button></div>
+            <div class="acceptDiv" >
+                <button id="acceptBtn">Accept</button>
+            </div>
         </div>
+
+        <script src="plansScript.js"></script>
     </body>
 </html>
