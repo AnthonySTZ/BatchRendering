@@ -10,22 +10,29 @@ const taskTable = document.querySelector("#taskTable");
 const slavesTable = document.querySelector("#slavesTable");
 
 
+function popupwindow(url, title, w, h) { // Open a new centered window
+    var left = (screen.width/2)-(w/2);
+    var top = (screen.height/2)-(h/2);
+    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+  } 
+
 // Save Box Buttons Events
 openNewBtn.addEventListener("click", () => {
 
-    alert("OPEN NEW");
+    alert("New File");
     
 });
 
 saveBtn.addEventListener("click", () => {
 
-    alert("SAVE");
+    var win = popupwindow("popups/savePopup.html", "Save File", 400, 800);
     
 });
 
 openBtn.addEventListener("click", () => {
 
-    alert("OPEN");
+    var win = popupwindow("popups/openPopup.html", "Open File", 400, 800);
+    
 
 });
 
@@ -83,94 +90,94 @@ clearTable(taskTable); //Clear Table
 clearTable(slavesTable); //Clear Table
 
 // Create rowsList for Passes Table
-const baseColorValues = [
+let baseColorValues = [
     ["Name", "BaseColor.bc"],
     ["Status", "Rendering"],
     ["Progress", "80% (80/100)"],
     ["Frames", "1-100"]
 ];
 
-const depthValues = [
+let depthValues = [
     ["Name", "depth.z"],
     ["Status", "Completed"],
     ["Progress", "100% (100/100)"],
     ["Frames", "1-100"]
 ];
 
-passesList = [
+let passesList = [
     new Map(baseColorValues),
     new Map(depthValues)
 ];
 
 // Create rowsList for Plans Table
-const plan1Values = [
+let plan1Values = [
     ["Software", "Maya"],
     ["Name", "Test_plan1"]
 ];
 
-const plan2Values = [
+let plan2Values = [
     ["Software", "Maya"],
     ["Name", "Gros"]
 ];
 
-const plan3Values = [
+let plan3Values = [
     ["Software", "Maya"],
     ["Name", "CavaOuQuoi"]
 ];
 
-plansList = [
+let plansList = [
     new Map(plan1Values),
     new Map(plan2Values),
     new Map(plan3Values)
 ];
 
 // Create rowsList for Tasks Table
-const task1Values = [
+let task1Values = [
     ["Name", "BattleOfMonCul.baseColor"],
     ["Frames", "1-100"],
     ["Status", "Completed"]
 ];
 
-const task2Values = [
+let task2Values = [
     ["Name", "BattleOfMonCul.depth.z"],
     ["Frames", "1-100"],
     ["Status", "Rendering"]
 ];
 
-const task3Values = [
+let task3Values = [
     ["Name", "BattleOfMonCul.chaipa"],
     ["Frames", "1-100"],
     ["Status", "Queued"]
 ];
 
 
-tasksList = [
+let tasksList = [
     new Map(task1Values),
     new Map(task2Values),
     new Map(task3Values)
 ];
 
 // Create rowsList for Slaves Table
-const slaves1Values = [
+let slaves1Values = [
     ["Machine", "Machine 1"],
     ["Frames", "1-100"],
     ["Status", "Offline"]
 ];
 
-const slaves2Values = [
+let slaves2Values = [
     ["Machine", "Machine 2"],
     ["Frames", "1-100"],
     ["Status", "Offline"]
 ];
 
-const slaves3Values = [
+let slaves3Values = [
     ["Machine", "Machine 3"],
     ["Frames", "1-100"],
     ["Status", "Rendering"]
 ];
 
 
-slavesList = [
+let slavesList = [
     new Map(slaves1Values),
     new Map(slaves2Values),
     new Map(slaves3Values)
@@ -215,8 +222,6 @@ createRows(slavesTable, slavesList);
 // Color Row by Status
 function colorAllTexts(nodes, color){
 
-    
-
     for(let j = 0; j < nodes.length; j++){
                 
         if (nodes[j].nodeName.toLowerCase() === "td"){
@@ -232,6 +237,7 @@ function colorAllTexts(nodes, color){
 function colorByStatus(table, rowList){
 
     let status;
+    let nodes;
 
     for (let i = 0; i < rowList.length; i++){
 
