@@ -198,10 +198,19 @@ function createRows(table, rowsList){
 
 }
 
-createRows(passesTable, passesList);
-createRows(plansTable, plansList);
-createRows(taskTable, tasksList);
-createRows(slavesTable, slavesList);
+function createAllRows(tables, lists){
+
+    for(let i = 0; i<tables.length; i++){
+
+        createRows(tables[i], lists[i]);
+
+    }
+
+
+}
+
+createAllRows(allTables, allLists);
+
 
 // Color Row by Status
 function colorAllTexts(nodes, color){
@@ -252,15 +261,21 @@ function colorByStatus(table, rowList){
 
 }
 
-colorByStatus(passesTable, passesList);
-colorByStatus(taskTable, tasksList);
-colorByStatus(slavesTable, slavesList);
+function colorAllTables(tables, lists){
 
-colorEvenRow(plansTable);
-colorEvenRow(passesTable);
-colorEvenRow(taskTable);
-colorEvenRow(slavesTable);
+    for (let i = 0; i<tables.length; i++){
 
+        if (lists[i][0].get("Status") != undefined){
+            colorByStatus(tables[i], lists[i]);
+        }
+        colorEvenRow(tables[i]);
+
+    }
+
+
+}
+
+colorAllTables(allTables, allLists)
 
 
 
@@ -269,25 +284,45 @@ function createTablesDatas(lists){ //Create Datas to save
     let datas = "";
     for (let list of lists){
 
-        datas += "{";
-        
         for(let map of list){
 
-            datas += JSON.stringify(Array.from(map.entries())) + ",";
+            datas += JSON.stringify(Array.from(map.entries())) + "*";
 
         }
 
-        datas += "}";
+        datas = datas.slice(0, -1);
+
+        datas += "|";
 
     }
 
-    return datas;
+    return datas.slice(0, -1); //remove last "*|"
 
 }
 
 function getDatasFromSave(saveText){
 
+    const allLists = saveText.split("|");
+    let AllDatas = [];
 
+    for (let list of allLists){
+        
+        const row = list.split("*");
+        let mapList = [];
+
+        for (let element of row){
+
+            let map = new Map(JSON.parse(element));
+            mapList.push(map);
+
+        }
+
+        AllDatas.push(mapList);
+
+    }
+    
+
+    return AllDatas;
 
 }
 
@@ -337,7 +372,12 @@ openBtn.addEventListener("click", () => { //Open Button
 
     const openProcess = spawn('python',["scripts/open.py"]);
     openProcess.stdout.on('data', (data) => {
-        console.log(data.toString('utf8'));
+        let datas = getDatasFromSave(data.toString('utf8'));
+
+        clearAllTables(allTables);
+        createAllRows([plansTable, passesTable, taskTable, slavesTable], datas);
+        colorAllTables(allTables, datas);
+
     });
     
 

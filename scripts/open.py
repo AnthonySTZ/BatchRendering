@@ -4,7 +4,10 @@ from tkinter import filedialog
 
 tkinter.Tk().withdraw() # prevents an empty tkinter window from appearing
 
-file = filedialog.askopenfile(initialdir = "/", initialfile = '.br', defaultextension=".br", filetypes=[("Batch Rendering","*.br")])
+file = filedialog.askopenfilename(initialdir = "/", initialfile = '.br', defaultextension=".br", filetypes=[("Batch Rendering","*.br")])
 
-print(file)
+f = open(file, "r")
+fileContent = f.read()
+
+print(fileContent)
 sys.stdout.flush()
