@@ -9,42 +9,8 @@ const passesTable = document.querySelector("#passesTable");
 const taskTable = document.querySelector("#taskTable");
 const slavesTable = document.querySelector("#slavesTable");
 
+const allTables = [plansTable, passesTable, taskTable, slavesTable];
 
-const spawn = require("child_process").spawn; //Create spawn for python script
-
-
-function popupwindow(url, title, w, h) { // Open a new centered window
-    var left = (screen.width/2)-(w/2);
-    var top = (screen.height/2)-(h/2);
-    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
-  } 
-
-// Save Box Buttons Events
-openNewBtn.addEventListener("click", () => { //Open New Button
-
-    alert("New File");
-    
-});
-
-saveBtn.addEventListener("click", () => { //Save Button
-
-    const saveProcess = spawn('python',["scripts/save.py"]);
-    saveProcess.stdout.on('data', (data) => {
-        console.log(data.toString('utf8'));
-    });
-   
-    
-});
-
-openBtn.addEventListener("click", () => { //Open Button
-
-    const openProcess = spawn('python',["scripts/open.py"]);
-    openProcess.stdout.on('data', (data) => {
-        console.log(data.toString('utf8'));
-    });
-    
-
-});
 
 
 // Color Even Row 
@@ -94,10 +60,16 @@ function clearTable(table){
     
 }
 
-clearTable(plansTable); //Clear Table
-clearTable(passesTable); //Clear Table
-clearTable(taskTable); //Clear Table
-clearTable(slavesTable); //Clear Table
+function clearAllTables(tables){
+
+    for(let table of tables){
+        clearTable(table);
+    }
+
+}
+
+
+clearAllTables(allTables);
 
 // Create rowsList for Passes Table
 let baseColorValues = [
@@ -193,6 +165,8 @@ let slavesList = [
     new Map(slaves3Values)
 ];
 
+const allLists = [plansList, passesList, tasksList, slavesList];
+
 // Create Rows
 function createRow(propertiesMap){
     
@@ -286,3 +260,85 @@ colorEvenRow(plansTable);
 colorEvenRow(passesTable);
 colorEvenRow(taskTable);
 colorEvenRow(slavesTable);
+
+
+
+
+function createTablesDatas(lists){ //Create Datas to save
+
+    let datas = "";
+    for (let list of lists){
+
+        datas += "{";
+        
+        for(let map of list){
+
+            datas += JSON.stringify(Array.from(map.entries())) + ",";
+
+        }
+
+        datas += "}";
+
+    }
+
+    return datas;
+
+}
+
+function getDatasFromSave(saveText){
+
+
+
+}
+
+
+
+
+
+
+
+
+// ------------------- SAVE OPEN BUTTONS -------------------------- //
+const spawn = require("child_process").spawn; //Create spawn for python script
+
+
+function popupwindow(url, title, w, h) { // Open a new centered window
+    let left = (screen.width/2)-(w/2);
+    let top = (screen.height/2)-(h/2);
+    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+  } 
+
+// Save Box Buttons Events
+openNewBtn.addEventListener("click", () => { //Open New Button Popup
+
+
+    const response = confirm("Open a new file ?");
+    if (response){
+
+        clearAllTables(allTables);
+
+    }
+    
+    
+});
+
+saveBtn.addEventListener("click", () => { //Save Button
+
+    const data_to_pass = createTablesDatas(allLists);
+    const saveProcess = spawn('python',["scripts/save.py", data_to_pass]);
+    saveProcess.stdout.on('data', (data) => {
+        console.log(data.toString('utf8'));
+    });
+   
+    
+});
+
+openBtn.addEventListener("click", () => { //Open Button
+
+    const openProcess = spawn('python',["scripts/open.py"]);
+    openProcess.stdout.on('data', (data) => {
+        console.log(data.toString('utf8'));
+    });
+    
+
+});
