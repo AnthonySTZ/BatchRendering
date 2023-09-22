@@ -190,14 +190,14 @@ h1{
     justify-content: center;
     list-style: none;    
     padding: 0;
-    height: 35px;
-    width: 35px;
+    height: 36px;
+    width: 36px;
     margin-right: 4px;
     background-color: #1a1a1a;
     border-radius: 8px;
 }
 
-.AddRemoveBox li:hover, button:hover{
+.button:hover{
 
     cursor: pointer;
 

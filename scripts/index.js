@@ -3,6 +3,16 @@ const openNewBtn = document.querySelector("#openNewBtn");
 const saveBtn = document.querySelector("#saveBtn");
 const openBtn = document.querySelector("#openBtn");
 
+//Add Remove Button
+const plansAddBtn = document.querySelector("#plansAddBtn");
+const plansRemoveBtn = document.querySelector("#plansRemoveBtn");
+const passesAddBtn = document.querySelector("#passesAddBtn");
+const passesRemoveBtn = document.querySelector("#passesRemoveBtn");
+const taskAddBtn = document.querySelector("#taskAddBtn");
+const taskRemoveBtn = document.querySelector("#taskRemoveBtn");
+const slavesAddBtn = document.querySelector("#slavesAddBtn");
+const slavesRemoveBtn = document.querySelector("#slavesRemoveBtn");
+
 // All table variables
 const plansTable = document.querySelector("#plansTable");
 const passesTable = document.querySelector("#passesTable");
@@ -337,13 +347,6 @@ function getDatasFromSave(saveText){
 const spawn = require("child_process").spawn; //Create spawn for python script
 
 
-function popupwindow(url, title, w, h) { // Open a new centered window
-    let left = (screen.width/2)-(w/2);
-    let top = (screen.height/2)-(h/2);
-    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
-  } 
-
-// Save Box Buttons Events
 openNewBtn.addEventListener("click", () => { //Open New Button Popup
 
 
@@ -381,4 +384,79 @@ openBtn.addEventListener("click", () => { //Open Button
     });
     
 
+});
+
+
+
+
+// ------------------- ADD REMOVE BUTTONS -------------------------- //
+
+
+function popupwindow(url, title, w, h) { // Open a new centered window
+    let left = (screen.width/2)-(w/2);
+    let top = (screen.height/2)-(h/2);
+    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+  } 
+
+function checkAllInputs(inputs){
+
+    let i =0;
+    for (let input of inputs){
+
+        i += checkInput(input);
+
+    }
+
+    return i;
+
+}
+
+function checkInput(input){
+    if (!input.value){
+        input.style.border = "1px solid #A6250D";
+        return 1;
+    }
+
+    input.style.border = "2px solid #3a3a3a";
+    return 0;
+    
+}
+
+plansAddBtn.addEventListener("click", () => { //Add plans row Button
+
+    let addWindow = popupwindow("popups/plansPropertiesPopup.html", "Porperties", 400, 200);
+
+    addWindow.addEventListener("load", () => { //Wait for the Add window to load 
+
+        const softwareInput = addWindow.document.querySelector("#softwareInput");
+        const nameInput = addWindow.document.querySelector("#nameInput");
+        const addAcceptBtn = addWindow.document.querySelector("#acceptBtn");
+
+        addAcceptBtn.addEventListener("click", () => { //Accept
+
+            const allInputs = [softwareInput, nameInput];
+
+            if(!checkAllInputs(allInputs)){ //Check if all inputs are filled
+
+                addWindow.close();
+
+                let row = [
+                    ["Software", softwareInput.value],
+                    ["Name", nameInput.value]
+                ];
+
+                const newRow = new Map(row);
+                plansList.push(newRow);
+                clearTable(plansTable);
+                createRows(plansTable, plansList);
+                colorAllTables([plansTable], [plansList]);
+
+            }
+
+        });
+
+    }, true);
+
+    
+    
 });
