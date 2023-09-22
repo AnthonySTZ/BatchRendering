@@ -175,7 +175,7 @@ let slavesList = [
     new Map(slaves3Values)
 ];
 
-const allLists = [plansList, passesList, tasksList, slavesList];
+let allLists = [plansList, passesList, tasksList, slavesList];
 
 // Create Rows
 function createRow(propertiesMap){
@@ -338,7 +338,16 @@ function getDatasFromSave(saveText){
 
 
 
+function clearAllLists(){
 
+    plansList = [];
+    passesList = [];
+    tasksList = [];
+    slavesList = [];
+
+    allLists = [plansList, passesList, tasksList, slavesList]
+
+}
 
 
 
@@ -353,6 +362,7 @@ openNewBtn.addEventListener("click", () => { //Open New Button Popup
     const response = confirm("Open a new file ?");
     if (response){
 
+        clearAllLists();
         clearAllTables(allTables);
 
     }
@@ -439,9 +449,14 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
 
                 addWindow.close();
 
-                let row = [ // !!!!!!!!!!!!!!!!! Tu dois get les info du fichier .ass pour le name 
+                let pathList = fileInput.value.split("\\")
+
+                let name = pathList[pathList.length - 1];
+
+
+                let row = [
                     ["Software", "Maya"],
-                    ["Name", "Test"]
+                    ["Name", name]
                 ];
 
                 const newRow = new Map(row);
