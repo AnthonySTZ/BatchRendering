@@ -66,7 +66,7 @@ function colorEvenRow(table){
 
 }
 
-// Clear Table
+// Clear All Tables
 function clearTable(table){
     
     const rowsNb = table.rows.length
@@ -77,21 +77,104 @@ function clearTable(table){
     
 }
 
+clearTable(plansTable); //Clear Table
 clearTable(passesTable); //Clear Table
+clearTable(taskTable); //Clear Table
+clearTable(slavesTable); //Clear Table
 
-baseColorMap = new Map(); // Une row dans un tableau, ici PassesTable
-baseColorMap.set("Name", "BaseColor.bc");
-baseColorMap.set("Status", "Rendering");
-baseColorMap.set("Progress", "80% (80/100)");
-baseColorMap.set("Frames", "1-100");
-passesList = [baseColorMap];
+// Create rowsList for Passes Table
+const baseColorValues = [
+    ["Name", "BaseColor.bc"],
+    ["Status", "Rendering"],
+    ["Progress", "80% (80/100)"],
+    ["Frames", "1-100"]
+];
 
-depthMap = new Map(); // Une row dans un tableau, ici PassesTable
-depthMap.set("Name", "depth.z");
-depthMap.set("Status", "Completed");
-depthMap.set("Progress", "100% (100/100)");
-depthMap.set("Frames", "1-100");
-passesList.push(depthMap);
+const depthValues = [
+    ["Name", "depth.z"],
+    ["Status", "Completed"],
+    ["Progress", "100% (100/100)"],
+    ["Frames", "1-100"]
+];
+
+passesList = [
+    new Map(baseColorValues),
+    new Map(depthValues)
+];
+
+// Create rowsList for Plans Table
+const plan1Values = [
+    ["Software", "Maya"],
+    ["Name", "Test_plan1"]
+];
+
+const plan2Values = [
+    ["Software", "Maya"],
+    ["Name", "Gros"]
+];
+
+const plan3Values = [
+    ["Software", "Maya"],
+    ["Name", "CavaOuQuoi"]
+];
+
+plansList = [
+    new Map(plan1Values),
+    new Map(plan2Values),
+    new Map(plan3Values)
+];
+
+// Create rowsList for Tasks Table
+const task1Values = [
+    ["Name", "BattleOfMonCul.baseColor"],
+    ["Frames", "1-100"],
+    ["Status", "Completed"]
+];
+
+const task2Values = [
+    ["Name", "BattleOfMonCul.depth.z"],
+    ["Frames", "1-100"],
+    ["Status", "Rendering"]
+];
+
+const task3Values = [
+    ["Name", "BattleOfMonCul.chaipa"],
+    ["Frames", "1-100"],
+    ["Status", "Queued"]
+];
+
+
+tasksList = [
+    new Map(task1Values),
+    new Map(task2Values),
+    new Map(task3Values)
+];
+
+// Create rowsList for Slaves Table
+const slaves1Values = [
+    ["Machine", "Machine 1"],
+    ["Frames", "1-100"],
+    ["Status", "Offline"]
+];
+
+const slaves2Values = [
+    ["Machine", "Machine 2"],
+    ["Frames", "1-100"],
+    ["Status", "Offline"]
+];
+
+const slaves3Values = [
+    ["Machine", "Machine 3"],
+    ["Frames", "1-100"],
+    ["Status", "Rendering"]
+];
+
+
+slavesList = [
+    new Map(slaves1Values),
+    new Map(slaves2Values),
+    new Map(slaves3Values)
+];
 
 // Create Rows
 function createRow(propertiesMap){
@@ -125,6 +208,9 @@ function createRows(table, rowsList){
 }
 
 createRows(passesTable, passesList);
+createRows(plansTable, plansList);
+createRows(taskTable, tasksList);
+createRows(slavesTable, slavesList);
 
 // Color Row by Status
 function colorAllTexts(nodes, color){
@@ -177,6 +263,8 @@ function colorByStatus(table, rowList){
 }
 
 colorByStatus(passesTable, passesList);
+colorByStatus(taskTable, tasksList);
+colorByStatus(slavesTable, slavesList);
 
 colorEvenRow(plansTable);
 colorEvenRow(passesTable);
