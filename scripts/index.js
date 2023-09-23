@@ -638,3 +638,76 @@ slavesAddBtn.addEventListener("click", () => { //Add Slave machine
     }, true);
 
 });
+
+
+
+
+// ---------------- ESSAI POUR REVOIR LES VARIABLES ---------------- //
+
+
+function addRow(rowObj){
+
+    let row = document.createElement("tr");
+    
+    for (let [key, value] of rowObj){
+        
+        let cell = document.createElement("td");
+        cell.innerText = value;
+        row.appendChild(cell);
+        row.appendChild(document.createElement("td")); //Cellule vide
+        
+    }
+    
+    return row;
+
+}
+
+function addAllRows(tableObj){
+
+    if (tableObj.rows.length === 0){ //Check if table is empty
+        return;
+    }
+
+    for (let rowObj of tableObj.rows){
+
+        let row = addRow(rowObj);
+        tableObj.table.appendChild(row);
+
+    }
+}
+
+function createAllTablesRows(tableList){
+
+    for (let tableObj of tableList){
+
+        addAllRows(tableObj);
+
+    }
+
+}
+
+let plansRow1Values = [
+    ["Software", "Maya"],
+    ["Path", "maya2325.ass"]
+];
+
+let plansRow2Values = [
+    ["Software", "Maya"],
+    ["Path", "mayaMonCul.ass"]
+];
+
+let plansRow1Obj = new Map(plansRow1Values);
+let plansRow2Obj = new Map(plansRow2Values);
+
+
+let plansTableObj = {
+    table : plansTable,
+    rows : [plansRow1Obj, plansRow2Obj],
+    rowSelected : undefined
+};
+
+
+let tablesList = [plansTableObj];
+
+clearAllTables(allTables);
+createAllTablesRows(tablesList);
