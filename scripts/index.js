@@ -404,24 +404,27 @@ openBtn.addEventListener("click", () => { //Open Button
 
 
 
-// ------------------- ADD REMOVE BUTTONS -------------------------- //
+// ------------------- REMOVE BUTTON -------------------------- //
 
 // ------------------- SELECT ROW -------------------------- //
-
 let plansRows = plansTable.getElementsByTagName("tr");
 let plansRowSelected;
 
+let slavesRows = slavesTable.getElementsByTagName("tr");
+let slavesRowSelected;
 
-function selectRowListener(plansRows){
+function selectRowListener(rows, tableName){
 
-    Array.from(plansRows).forEach((row, index) => {
+    Array.from(rows).forEach((row, index) => {
         row.addEventListener("click", () => {
     
             let nodes;
+            
+            let table = row.parentNode;
+
+            for (let i = 0; i<table.rows.length; i++){ //Remove Selection of all rows
     
-            for (let i = 0; i<plansTable.rows.length; i++){ //Remove Selection of all rows
-    
-                nodes = plansTable.rows[i].childNodes;
+                nodes = table.rows[i].childNodes;
     
                 for(let j = 0; j < nodes.length; j++){
                     
@@ -437,10 +440,14 @@ function selectRowListener(plansRows){
     
     
             if (index >= 2){
-    
-                plansRowSelected = index-2;
-    
-                console.log(plansList[index-2].get("Path"));
+
+                if (tableName === "plansTable"){                    
+                    plansRowSelected = index-2;
+                    console.log(plansList[index-2].get("Path"));
+                } else if (tableName === "slavesTable"){
+                    slavesRowSelected = index-2;
+                    console.log(slavesList[index-2].get("Machine"));
+                }
     
                 nodes = row.childNodes;
     
@@ -462,9 +469,10 @@ function selectRowListener(plansRows){
 
 }
 
-selectRowListener(plansRows)
+selectRowListener(plansRows, "plansTable")
+selectRowListener(slavesRows, "slavesTable")
 
-plansRemoveBtn.addEventListener("click", () => {
+plansRemoveBtn.addEventListener("click", () => { //REMOVE PLANS ROW
 
 
     if (plansRowSelected === undefined || plansList.length === 0){ //No row Selected
@@ -481,11 +489,38 @@ plansRemoveBtn.addEventListener("click", () => {
     colorAllTables([plansTable], [plansList]);
 
     plansRows = plansTable.getElementsByTagName("tr");
-    selectRowListener(plansRows);
+    selectRowListener(plansRows, "plansTable")
 
     plansRowSelected = undefined;
 
 });
+
+slavesRemoveBtn.addEventListener("click", () => { //REMOVE SLAVES ROW
+
+
+    if (slavesRowSelected === undefined || slavesList.length === 0){ //No row Selected
+        console.log("Noting selected");
+        return;
+    }
+
+    console.log("Row Selected: " + slavesRowSelected.toString());
+    console.log(slavesList);
+    slavesList.splice(slavesRowSelected, 1);
+
+    clearTable(slavesTable);
+    createRows(slavesTable, slavesList);
+    colorAllTables([slavesTable], [slavesList]);
+
+    slavesRows = slavesTable.getElementsByTagName("tr");
+    selectRowListener(slavesRows, "slavesTable")
+
+    slavesRowSelected = undefined;
+
+});
+
+
+
+//------------- ADD BUTTON ---------------- //
 
 function popupwindow(url, title, w, h) { // Open a new centered window
     let left = (screen.width/2)-(w/2);
@@ -549,7 +584,7 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
                 colorAllTables([plansTable], [plansList]);
 
                 plansRows = plansTable.getElementsByTagName("tr");
-                selectRowListener(plansRows);
+                selectRowListener(plansRows, "plansTable")
                 plansRowSelected = undefined;
 
             }
@@ -592,6 +627,10 @@ slavesAddBtn.addEventListener("click", () => { //Add Slave machine
                 createRows(slavesTable, slavesList);
                 colorAllTables([slavesTable], [slavesList]);
 
+                slavesRows = slavesTable.getElementsByTagName("tr");
+                selectRowListener(slavesRows, "slavesTable")
+                slavesRowSelected = undefined;
+
             }
 
         });
@@ -599,5 +638,3 @@ slavesAddBtn.addEventListener("click", () => { //Add Slave machine
     }, true);
 
 });
-
-

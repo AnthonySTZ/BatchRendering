@@ -1,4 +1,3 @@
-- Ajouter une ligne pour le reste des tables mdr
+Utiliser des objects pour stocker des données peut etre : ex : let variable = {Name : "Maya", Path : "maya2024.ass"}; Fonctionne comme Pointer
 
-- Selectionner une ligne 
--> pouvoir remove cette ligne
+- Ajouter une ligne pour le reste des tables mdr
