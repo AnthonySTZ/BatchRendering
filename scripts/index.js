@@ -104,17 +104,17 @@ let passesList = [
 // Create rowsList for Plans Table
 let plan1Values = [
     ["Software", "Maya"],
-    ["Name", "Test_plan1"]
+    ["Path", "Test_plan1"]
 ];
 
 let plan2Values = [
     ["Software", "Maya"],
-    ["Name", "Gros"]
+    ["Path", "Gros"]
 ];
 
 let plan3Values = [
     ["Software", "Maya"],
-    ["Name", "CavaOuQuoi"]
+    ["Path", "CavaOuQuoi"]
 ];
 
 let plansList = [
@@ -197,14 +197,18 @@ function createRow(propertiesMap){
 
 function createRows(table, rowsList){
 
-    let row;
+    if (rowsList.length > 0){ //Check if table is empty
 
-    for (let i of rowsList){
+        let row;
 
-        row = createRow(i);
-        table.appendChild(row);
+        for (let i of rowsList){
 
-    }
+            row = createRow(i);
+            table.appendChild(row);
+
+        }
+
+    }    
 
 }
 
@@ -218,6 +222,7 @@ function createAllRows(tables, lists){
 
 
 }
+
 
 createAllRows(allTables, allLists);
 
@@ -275,10 +280,14 @@ function colorAllTables(tables, lists){
 
     for (let i = 0; i<tables.length; i++){
 
-        if (lists[i][0].get("Status") != undefined){
-            colorByStatus(tables[i], lists[i]);
+        if (lists[i].length > 0){//Check if table is empty
+
+            if (lists[i][0].get("Status") != undefined){
+                colorByStatus(tables[i], lists[i]);
+            }
+            colorEvenRow(tables[i]);
+            
         }
-        colorEvenRow(tables[i]);
 
     }
 
@@ -394,8 +403,89 @@ openBtn.addEventListener("click", () => { //Open Button
 
 
 
+
 // ------------------- ADD REMOVE BUTTONS -------------------------- //
 
+// ------------------- SELECT ROW -------------------------- //
+
+let plansRows = plansTable.getElementsByTagName("tr");
+let plansRowSelected;
+
+
+function selectRowListener(plansRows){
+
+    Array.from(plansRows).forEach((row, index) => {
+        row.addEventListener("click", () => {
+    
+            let nodes;
+    
+            for (let i = 0; i<plansTable.rows.length; i++){ //Remove Selection of all rows
+    
+                nodes = plansTable.rows[i].childNodes;
+    
+                for(let j = 0; j < nodes.length; j++){
+                    
+                    if (nodes[j].nodeName.toLowerCase() === "td"){
+                        
+                        nodes[j].classList.remove("selectRow");
+            
+                    }
+            
+                }
+    
+            }
+    
+    
+            if (index >= 2){
+    
+                plansRowSelected = index-2;
+    
+                console.log(plansList[index-2].get("Path"));
+    
+                nodes = row.childNodes;
+    
+                for(let j = 0; j < nodes.length; j++){ //Add Selection to the row
+                    
+                    if (nodes[j].nodeName.toLowerCase() === "td"){
+                        
+                        nodes[j].classList.add("selectRow");
+            
+                    }
+            
+                }
+                
+            }
+    
+    
+        });
+    });
+
+}
+
+selectRowListener(plansRows)
+
+plansRemoveBtn.addEventListener("click", () => {
+
+
+    if (plansRowSelected === undefined || plansList.length === 0){ //No row Selected
+        console.log("Noting selected");
+        return;
+    }
+
+    console.log("Row Selected: " + plansRowSelected.toString());
+    console.log(plansList);
+    plansList.splice(plansRowSelected, 1);
+
+    clearTable(plansTable);
+    createRows(plansTable, plansList);
+    colorAllTables([plansTable], [plansList]);
+
+    plansRows = plansTable.getElementsByTagName("tr");
+    selectRowListener(plansRows);
+
+    plansRowSelected = undefined;
+
+});
 
 function popupwindow(url, title, w, h) { // Open a new centered window
     let left = (screen.width/2)-(w/2);
@@ -444,14 +534,12 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
 
                 addWindow.close();
 
-                let pathList = fileInput.value.split("\\")
-
-                let name = pathList[pathList.length - 1];
+                let path = fileInput.value;
 
 
                 let row = [
                     ["Software", "Maya"],
-                    ["Name", name]
+                    ["Path", path]
                 ];
 
                 const newRow = new Map(row);
@@ -459,6 +547,10 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
                 clearTable(plansTable);
                 createRows(plansTable, plansList);
                 colorAllTables([plansTable], [plansList]);
+
+                plansRows = plansTable.getElementsByTagName("tr");
+                selectRowListener(plansRows);
+                plansRowSelected = undefined;
 
             }
 
@@ -507,3 +599,5 @@ slavesAddBtn.addEventListener("click", () => { //Add Slave machine
     }, true);
 
 });
+
+
