@@ -642,9 +642,19 @@ slavesAddBtn.addEventListener("click", () => { //Add Slave machine
 
 
 
+
+
+
+
+
+
+
+
+
+
 // ---------------- ESSAI POUR REVOIR LES VARIABLES ---------------- //
 
-
+// ----------- CREATE TABLES ----------- //
 function addRow(rowObj){
 
     let row = document.createElement("tr");
@@ -676,15 +686,183 @@ function addAllRows(tableObj){
     }
 }
 
-function createAllTablesRows(tableList){
+function createAllTablesRows(tableObjList){
 
-    for (let tableObj of tableList){
+    for (let tableObj of tableObjList){
 
         addAllRows(tableObj);
 
     }
 
 }
+
+// ----------- COLOR ----------- //
+function colorTds(nodes, color){
+
+    for(let j = 0; j < nodes.length; j++){
+                
+        if (nodes[j].nodeName.toLowerCase() === "td"){
+
+            nodes[j].style.background = color; 
+
+        } 
+
+    }
+
+}
+
+
+function colorAllTablesEvenRows(tablesObjList){
+
+    for(let tableObj of tablesObjList){
+
+        for (let i=0; i < tableObj.rows.length; i++){
+
+            let nodes = tableObj.table.rows[i+2].childNodes;
+
+            if (i % 2 === 1){
+                
+                colorTds(nodes, "#292929");
+                
+            } else {
+
+                colorTds(nodes, "#1a1a1a");
+
+            }
+
+        }
+    }
+
+}
+
+
+function colorAllRowTexts(nodes, color){
+
+    for(let j = 0; j < nodes.length; j++){
+                
+        if (nodes[j].nodeName.toLowerCase() === "td"){
+
+            nodes[j].style.color = color; 
+
+        } 
+
+    }
+
+}
+
+function colorRowsByStatus(tablesObjList){
+
+    let status;
+    let nodes;
+
+    for (let tableObj of tablesObjList){
+
+        let eligible = true;
+        
+        if (tableObj.rows.length == 0){ //No Row in table
+            eligible = false;
+        }
+
+        if (!tableObj.rows[0].has("Status")){ // Table doesn't have Status
+            eligible = false;
+        }
+
+
+        if (eligible){
+
+            for (let i = 0; i < tableObj.rows.length; i++){
+                
+                status = tableObj.rows[i].get("Status");
+                nodes = tableObj.table.rows[i+2].childNodes;
+                
+                if (status === "Queued"){
+                    
+                    colorAllRowTexts(nodes, "#939393"); //Grey
+                    
+                } else if (status === "Rendering"){
+                    
+                    colorAllRowTexts(nodes, "#EE9616"); //Orange         
+                    
+                } else if (status === "Completed"){
+                    
+                colorAllRowTexts(nodes, "#95ff8f"); //Green
+                
+                } else {
+                    
+                    colorAllRowTexts(nodes, "#E74D31") //Red
+                    
+                }            
+            
+            }
+            
+        }
+    }
+
+}
+
+// ----------- CLEAR ROWS ----------- //
+function clearAllTablesRows(tablesObjList){
+
+    for(let tableObj of tablesObjList){
+
+        tableObj.rows = [];
+
+    }
+
+
+}
+
+// ----------- SAVE AND OPEN ----------- //
+function createTablesData(tablesObjList){ //Create Datas to save
+
+    let datas = "";
+
+    for (let tableObj of tablesObjList){
+
+        for(let row of tableObj.rows){
+
+            datas += JSON.stringify(Array.from(row.entries())) + "*";
+
+        }
+
+        datas = datas.slice(0, -1);
+
+        datas += "|";
+
+    }
+    
+    return datas.slice(0, -1); //remove last "*|"
+
+}
+
+function getDataFromSave(saveText){
+
+    const allLists = saveText.split("|");
+    let AllDatas = [];
+
+    for (let list of allLists){
+        
+        let row = list.split("*");
+        let mapList = [];
+
+        for (let element of row){
+
+            let map = new Map(JSON.parse(element));
+            mapList.push(map);
+
+        }
+
+        AllDatas.push(mapList);
+
+    }
+    
+
+    return AllDatas;
+
+}
+
+
+// ----------- INIT TABLES ----------- //
 
 let plansRow1Values = [
     ["Software", "Maya"],
@@ -706,8 +884,93 @@ let plansTableObj = {
     rowSelected : undefined
 };
 
+// ----------- //
 
-let tablesList = [plansTableObj];
+let passesRow1Values = [
+    ["Name", "BaseColor.bc"],
+    ["Status", "Rendering"],
+    ["Progress", "80% (80/100)"],
+    ["Frames", "1-100"]
+];
+
+let passesRow2Values = [
+    ["Name", "depth"],
+    ["Status", "Completed"],
+    ["Progress", "100% (100/100)"],
+    ["Frames", "1-100"]
+];
+
+let passesRow1Obj = new Map(passesRow1Values);
+let passesRow2Obj = new Map(passesRow2Values);
+
+
+let passesTableObj = {
+    table : passesTable,
+    rows : [passesRow1Obj, passesRow2Obj],
+    rowSelected : undefined
+};
+
+// ----------- //
+
+let tasksRow1Values = [
+    ["Name", "BattleOfMonCul.chaipa"],
+    ["Frames", "1-100"],
+    ["Status", "Queued"]
+];
+
+let tasksRow2Values = [
+    ["Name", "adipa"],
+    ["Frames", "1-100"],
+    ["Status", "Completed"]
+];
+
+let tasksRow3Values = [
+    ["Name", "Mashala"],
+    ["Frames", "1-100"],
+    ["Status", "Suspended"]
+];
+
+let tasksRow4Values = [
+    ["Name", "Grof"],
+    ["Frames", "1-100"],
+    ["Status", "Queued"]
+];
+
+let tasksRow1Obj = new Map(tasksRow1Values);
+let tasksRow2Obj = new Map(tasksRow2Values);
+let tasksRow3Obj = new Map(tasksRow3Values);
+let tasksRow4Obj = new Map(tasksRow4Values);
+
+
+let taskTableObj = {
+    table : taskTable,
+    rows : [tasksRow1Obj, tasksRow2Obj, tasksRow3Obj, tasksRow4Obj],
+    rowSelected : undefined
+};
+
+// ----------- //
+
+let slavesRow1Values = [
+    ["Machine", "Machine 1"],
+    ["Frames", "None"],
+    ["Status", "Offline"]
+];
+
+let slavesRow1Obj = new Map(slavesRow1Values);
+
+
+let slavesTableObj = {
+    table : slavesTable,
+    rows : [slavesRow1Obj],
+    rowSelected : undefined
+};
+
+// ----------- //
+
+let tablesObjList = [plansTableObj, passesTableObj, taskTableObj, slavesTableObj];
 
 clearAllTables(allTables);
-createAllTablesRows(tablesList);
+createAllTablesRows(tablesObjList);
+
+colorAllTablesEvenRows(tablesObjList);
+colorRowsByStatus(tablesObjList);
