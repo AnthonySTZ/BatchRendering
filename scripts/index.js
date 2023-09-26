@@ -60,26 +60,7 @@ function colorEvenRow(table){
 }
 
 // Clear All Tables
-function clearTable(table){
-    
-    const rowsNb = table.rows.length
-    
-    for (let i = 2; i < rowsNb; i++){ //REMOVE ALL ROWS
-        table.deleteRow(-1);
-    }
-    
-}
 
-function clearAllTables(tables){
-
-    for(let table of tables){
-        clearTable(table);
-    }
-
-}
-
-
-clearAllTables(allTables);
 
 // Create rowsList for Passes Table
 let baseColorValues = [
@@ -224,7 +205,7 @@ function createAllRows(tables, lists){
 }
 
 
-createAllRows(allTables, allLists);
+//createAllRows(allTables, allLists);
 
 
 // Color Row by Status
@@ -294,10 +275,6 @@ function colorAllTables(tables, lists){
 
 }
 
-colorAllTables(allTables, allLists)
-
-
-
 function createTablesDatas(lists){ //Create Datas to save
 
     let datas = "";
@@ -361,44 +338,7 @@ function clearAllLists(){
 
 
 
-// ------------------- SAVE OPEN BUTTONS -------------------------- //
-const spawn = require("child_process").spawn; //Create spawn for python script
 
-
-openNewBtn.addEventListener("click", () => { //Open New Button Popup
-
-
-    clearAllLists();
-    clearAllTables(allTables);
-
-    
-});
-
-saveBtn.addEventListener("click", () => { //Save Button
-
-    const data_to_pass = createTablesDatas(allLists);
-    const saveProcess = spawn('python',["scripts/save.py", data_to_pass]);
-    saveProcess.stdout.on('data', (data) => {
-        console.log(data.toString('utf8'));
-    });
-   
-    
-});
-
-openBtn.addEventListener("click", () => { //Open Button
-
-    const openProcess = spawn('python',["scripts/open.py"]);
-    openProcess.stdout.on('data', (data) => {
-        let datas = getDatasFromSave(data.toString('utf8'));
-
-        clearAllTables(allTables);
-        createAllRows([plansTable, passesTable, taskTable, slavesTable], datas);
-        colorAllTables(allTables, datas);
-
-    });
-    
-
-});
 
 
 
@@ -800,7 +740,25 @@ function colorRowsByStatus(tablesObjList){
 
 }
 
-// ----------- CLEAR ROWS ----------- //
+// ----------- CLEAR TABLES & ROWS ----------- //
+function clearTable(tableObj){
+    
+    let nbRows = tableObj.table.rows.length;
+
+    for (let i = 2; i < nbRows; i++){ //REMOVE ALL ROWS
+        tableObj.table.deleteRow(-1);
+    }
+    
+}
+
+function clearAllTables(tablesObjList){
+
+    for(let tableObj of tablesObjList){
+        clearTable(tableObj);
+    }
+
+}
+
 function clearAllTablesRows(tablesObjList){
 
     for(let tableObj of tablesObjList){
@@ -858,6 +816,16 @@ function getDataFromSave(saveText){
     
 
     return AllDatas;
+
+}
+
+function loadData(tableObjList, data){
+
+    for(let i = 0; i < tableObjList.length; i++){
+
+        tableObjList[i].rows = data[i];
+
+    }
 
 }
 
@@ -969,8 +937,66 @@ let slavesTableObj = {
 
 let tablesObjList = [plansTableObj, passesTableObj, taskTableObj, slavesTableObj];
 
-clearAllTables(allTables);
+clearAllTables(tablesObjList);
 createAllTablesRows(tablesObjList);
 
 colorAllTablesEvenRows(tablesObjList);
 colorRowsByStatus(tablesObjList);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ------------------ BUTTONS ------------------ //
+
+// ------------------- SAVE OPEN BUTTONS -------------------------- //
+const spawn = require("child_process").spawn; //Create spawn for python script
+
+
+openNewBtn.addEventListener("click", () => { //Open New Button Popup
+
+    clearAllTablesRows(tablesObjList);
+    clearAllTables(tablesObjList)
+    
+});
+
+saveBtn.addEventListener("click", () => { //Save Button
+
+    const data_to_pass = createTablesData(tablesObjList);
+    const saveProcess = spawn('python',["scripts/save.py", data_to_pass]);
+    saveProcess.stdout.on('data', (data) => {
+        console.log(data.toString('utf8'));
+    });
+   
+    
+});
+
+openBtn.addEventListener("click", () => { //Open Button
+
+    const openProcess = spawn('python',["scripts/open.py"]);
+    openProcess.stdout.on('data', (data) => {
+        let datas = getDataFromSave(data.toString('utf8'));
+
+        loadData(tablesObjList, datas),
+        clearAllTables(tablesObjList);
+        createAllTablesRows(tablesObjList);
+
+        colorAllTablesEvenRows(tablesObjList);
+        colorRowsByStatus(tablesObjList);
+
+    });
+    
+
+});
+
