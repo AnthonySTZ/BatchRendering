@@ -1,5 +1,1 @@
-Utiliser des objects pour stocker des données peut etre : ex : let variable = {Name : "Maya", Path : "maya2024.ass"}; Fonctionne comme Pointer
-
-Mettre le listenerRow dans la function AddRow au moins pas besoin de l'appeler 2 fois
-
-- Ajouter une ligne pour le reste des tables mdr
+Gérer les passes... ca va etre chiant mdr

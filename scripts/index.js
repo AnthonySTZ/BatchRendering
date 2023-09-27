@@ -19,27 +19,6 @@ const passesTable = document.querySelector("#passesTable");
 const taskTable = document.querySelector("#taskTable");
 const slavesTable = document.querySelector("#slavesTable");
 
-
-
-
-
-
-//------------- ADD BUTTON ---------------- //
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ---------------- ESSAI POUR REVOIR LES VARIABLES ---------------- //
-
 // ----------- CREATE TABLES ----------- //
 function addRow(rowObj){
 
@@ -70,6 +49,8 @@ function addAllRows(tableObj){
         tableObj.table.appendChild(row);
 
     }
+
+    selectRowListener(tableObj);
 }
 
 function createAllTablesRows(tableObjList){
@@ -285,9 +266,6 @@ function loadData(tableObjList, data){
 
 }
 
-
-
-
 // ------------- ROW SELECTION ------------ //
 function selectRowListener(tableObj){
 
@@ -318,11 +296,11 @@ function selectRowListener(tableObj){
     
             if (index >= 2){
 
-                if (tableObj.name === "Plans"){                    
-                    tableObj.rowSelected = index-2;
+                tableObj.rowSelected = index-2;
+
+                if (tableObj.name === "Plans"){
                     console.log(tableObj.rows[index-2].get("Path"));
                 } else if (tableObj.name === "Slaves"){
-                    tableObj.rowSelected = index-2;
                     console.log(tableObj.rows[index-2].get("Machine"));
                 }
     
@@ -365,7 +343,6 @@ function removeSelectedRow(tableObj){
             colorRowsByStatus(tableObj);
         }
     }
-    selectRowListener(tableObj);
 
     tableObj.rowSelected = undefined;
 
@@ -530,10 +507,6 @@ createAllTablesRows(tablesObjList);
 colorAllTablesEvenRows(tablesObjList);
 colorAllTablesRowsByStatus(tablesObjList);
 
-selectRowListener(plansTableObj)
-selectRowListener(slavesTableObj)
-
-
 
 
 
@@ -639,7 +612,6 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
                 addAllRows(plansTableObj);
                 colorEvenRows(plansTableObj);
 
-                selectRowListener(plansTableObj);
                 plansTableObj.rowSelected = undefined;
 
             }
@@ -683,7 +655,6 @@ slavesAddBtn.addEventListener("click", () => { //Add Slave machine
                 colorEvenRows(slavesTableObj);
                 colorRowsByStatus(slavesTableObj);
 
-                selectRowListener(slavesTableObj);
                 slavesTableObj.rowSelected = undefined;
 
             }
