@@ -26,124 +26,6 @@ const slavesTable = document.querySelector("#slavesTable");
 
 //------------- ADD BUTTON ---------------- //
 
-function popupwindow(url, title, w, h) { // Open a new centered window
-    let left = (screen.width/2)-(w/2);
-    let top = (screen.height/2)-(h/2);
-    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
-  } 
-
-function checkAllInputs(inputs){
-
-    let i =0;
-    for (let input of inputs){
-
-        i += checkInput(input);
-
-    }
-
-    return i;
-
-}
-
-function checkInput(input){
-    if (!input.value){
-        input.style.border = "1px solid #A6250D";
-        return 1;
-    }
-
-    input.style.border = "2px solid #3a3a3a";
-    return 0;
-    
-}
-
-plansAddBtn.addEventListener("click", () => { //Add plans row Button
-
-    let addWindow = popupwindow("popups/plansPropertiesPopup.html", "Porperties", 400, 200); //400*200
-
-    addWindow.addEventListener("load", () => { //Wait for the Add window to load 
-
-        const fileInput = addWindow.document.querySelector("#fileInput");
-        const addAcceptBtn = addWindow.document.querySelector("#acceptBtn");
-
-        addAcceptBtn.addEventListener("click", () => { //Accept
-
-            const allInputs = [fileInput];
-
-            if(!checkAllInputs(allInputs)){ //Check if all inputs are filled
-
-                addWindow.close();
-
-                let path = fileInput.value;
-
-
-                let row = [
-                    ["Software", "Maya"],
-                    ["Path", path]
-                ];
-
-                const newRow = new Map(row);
-                plansList.push(newRow);
-                clearTable(plansTable);
-                createRows(plansTable, plansList);
-                colorAllTables([plansTable], [plansList]);
-
-                plansRows = plansTable.getElementsByTagName("tr");
-                selectRowListener(plansRows, "plansTable")
-                plansRowSelected = undefined;
-
-            }
-
-        });
-
-    }, true);
-
-    
-});
-
-slavesAddBtn.addEventListener("click", () => { //Add Slave machine
-
-    let addWindow = popupwindow("popups/slavesPropertiesPopup.html", "Porperties", 400, 200); //400*200
-
-    addWindow.addEventListener("load", () => { //Wait for the Add window to load 
-
-        const slaveInput = addWindow.document.querySelector("#slaveInput");
-        const addAcceptBtn = addWindow.document.querySelector("#acceptBtn");
-
-        addAcceptBtn.addEventListener("click", () => { //Accept
-
-            const allInputs = [slaveInput];
-
-            if(!checkAllInputs(allInputs)){ //Check if all inputs are filled
-
-                addWindow.close();
-                
-                let name = slaveInput.value;
-
-                let row = [
-                    ["Machine", name],
-                    ["Frame", "None"],
-                    ["Status", "Offline"]
-                ];
-
-                const newRow = new Map(row);
-                slavesList.push(newRow);
-                clearTable(slavesTable);
-                createRows(slavesTable, slavesList);
-                colorAllTables([slavesTable], [slavesList]);
-
-                slavesRows = slavesTable.getElementsByTagName("tr");
-                selectRowListener(slavesRows, "slavesTable")
-                slavesRowSelected = undefined;
-
-            }
-
-        });
-
-    }, true);
-
-});
-
-
 
 
 
@@ -464,7 +346,7 @@ function selectRowListener(tableObj){
 
 }
 
-
+// ------------- REMOVE ROW ------------ //
 function removeSelectedRow(tableObj){
 
     if (tableObj.rowSelected === undefined || tableObj.rows.length === 0){ //No row Selected
@@ -478,14 +360,58 @@ function removeSelectedRow(tableObj){
     clearTable(tableObj);
     addAllRows(tableObj);
     colorEvenRows(tableObj);
-    colorRowsByStatus(tableObj);
-
+    if (tableObj.rows.length != 0){
+        if (tableObj.rows[0].has("Status")){
+            colorRowsByStatus(tableObj);
+        }
+    }
     selectRowListener(tableObj);
 
     tableObj.rowSelected = undefined;
 
+}
+
+// ------------- ADD NEW ROW ------------ //
+function popupwindow(url, title, w, h) { // Open a new centered window
+    let left = (screen.width/2)-(w/2);
+    let top = (screen.height/2)-(h/2);
+    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+  } 
+
+  function checkInput(input){
+    if (!input.value){
+        input.style.border = "1px solid #A6250D";
+        return 1;
+    }
+
+    input.style.border = "2px solid #3a3a3a";
+    return 0;
+    
+}
+
+function checkAllInputs(inputs){
+
+    let i =0;
+    for (let input of inputs){
+
+        i += checkInput(input);
+
+    }
+
+    return i;
 
 }
+
+
+
+
+
+
+
+
+
+
+
 
 // ----------- INIT TABLES ----------- //
 
@@ -661,6 +587,9 @@ openBtn.addEventListener("click", () => { //Open Button
 
 });
 
+
+
+
 // ------------------- REMOVE BUTTON -------------------------- //
 plansRemoveBtn.addEventListener("click", () => { //REMOVE PLANS ROW
 
@@ -672,5 +601,95 @@ plansRemoveBtn.addEventListener("click", () => { //REMOVE PLANS ROW
 slavesRemoveBtn.addEventListener("click", () => { //REMOVE SLAVES ROW
 
     removeSelectedRow(slavesTableObj);
+
+});
+
+
+
+
+// ------------------- ADD BUTTON -------------------------- //
+plansAddBtn.addEventListener("click", () => { //Add plans row Button
+
+    let addWindow = popupwindow("popups/plansPropertiesPopup.html", "Porperties", 400, 200); //400*200
+
+    addWindow.addEventListener("load", () => { //Wait for the Add window to load 
+
+        let fileInput = addWindow.document.querySelector("#fileInput");
+        let addAcceptBtn = addWindow.document.querySelector("#acceptBtn");
+
+        addAcceptBtn.addEventListener("click", () => { //Accept
+
+            let allInputs = [fileInput];
+
+            if(!checkAllInputs(allInputs)){ //Check if all inputs are filled
+
+                addWindow.close();
+
+                let path = fileInput.value;
+
+
+                let row = [
+                    ["Software", "Maya"],
+                    ["Path", path]
+                ];
+
+                let newRow = new Map(row);
+                plansTableObj.rows.push(newRow);
+                clearTable(plansTableObj);
+                addAllRows(plansTableObj);
+                colorEvenRows(plansTableObj);
+
+                selectRowListener(plansTableObj);
+                plansTableObj.rowSelected = undefined;
+
+            }
+
+        });
+
+    }, true);
+
+    
+});
+
+slavesAddBtn.addEventListener("click", () => { //Add Slave machine
+
+    let addWindow = popupwindow("popups/slavesPropertiesPopup.html", "Porperties", 400, 200); //400*200
+
+    addWindow.addEventListener("load", () => { //Wait for the Add window to load 
+
+        let slaveInput = addWindow.document.querySelector("#slaveInput");
+        let addAcceptBtn = addWindow.document.querySelector("#acceptBtn");
+
+        addAcceptBtn.addEventListener("click", () => { //Accept
+
+            let allInputs = [slaveInput];
+
+            if(!checkAllInputs(allInputs)){ //Check if all inputs are filled
+
+                addWindow.close();
+                
+                let name = slaveInput.value;
+
+                let row = [
+                    ["Machine", name],
+                    ["Frame", "None"],
+                    ["Status", "Offline"]
+                ];
+
+                let newRow = new Map(row);
+                slavesTableObj.rows.push(newRow);
+                clearTable(slavesTableObj);
+                addAllRows(slavesTableObj);
+                colorEvenRows(slavesTableObj);
+                colorRowsByStatus(slavesTableObj);
+
+                selectRowListener(slavesTableObj);
+                slavesTableObj.rowSelected = undefined;
+
+            }
+
+        });
+
+    }, true);
 
 });
