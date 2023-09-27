@@ -20,56 +20,7 @@ const taskTable = document.querySelector("#taskTable");
 const slavesTable = document.querySelector("#slavesTable");
 
 
-// ------------------- REMOVE BUTTON -------------------------- //
 
-// ------------------- SELECT ROW -------------------------- //
-
-
-plansRemoveBtn.addEventListener("click", () => { //REMOVE PLANS ROW
-
-
-    if (plansRowSelected === undefined || plansList.length === 0){ //No row Selected
-        console.log("Noting selected");
-        return;
-    }
-
-    console.log("Row Selected: " + plansRowSelected.toString());
-    console.log(plansList);
-    plansList.splice(plansRowSelected, 1);
-
-    clearTable(plansTable);
-    createRows(plansTable, plansList);
-    colorAllTables([plansTable], [plansList]);
-
-    plansRows = plansTable.getElementsByTagName("tr");
-    selectRowListener(plansRows, "plansTable")
-
-    plansRowSelected = undefined;
-
-});
-
-slavesRemoveBtn.addEventListener("click", () => { //REMOVE SLAVES ROW
-
-
-    if (slavesRowSelected === undefined || slavesList.length === 0){ //No row Selected
-        console.log("Noting selected");
-        return;
-    }
-
-    console.log("Row Selected: " + slavesRowSelected.toString());
-    console.log(slavesList);
-    slavesList.splice(slavesRowSelected, 1);
-
-    clearTable(slavesTable);
-    createRows(slavesTable, slavesList);
-    colorAllTables([slavesTable], [slavesList]);
-
-    slavesRows = slavesTable.getElementsByTagName("tr");
-    selectRowListener(slavesRows, "slavesTable")
-
-    slavesRowSelected = undefined;
-
-});
 
 
 
@@ -264,26 +215,32 @@ function colorTds(nodes, color){
 
 }
 
+function colorEvenRows(tableObj){
+
+    for (let i=0; i < tableObj.rows.length; i++){
+
+        let nodes = tableObj.table.rows[i+2].childNodes;
+
+        if (i % 2 === 1){
+            
+            colorTds(nodes, "#292929");
+            
+        } else {
+
+            colorTds(nodes, "#1a1a1a");
+
+        }
+
+    }
+
+}
 
 function colorAllTablesEvenRows(tablesObjList){
 
     for(let tableObj of tablesObjList){
 
-        for (let i=0; i < tableObj.rows.length; i++){
-
-            let nodes = tableObj.table.rows[i+2].childNodes;
-
-            if (i % 2 === 1){
-                
-                colorTds(nodes, "#292929");
-                
-            } else {
-
-                colorTds(nodes, "#1a1a1a");
-
-            }
-
-        }
+        colorEvenRows(tableObj);
+        
     }
 
 }
@@ -303,52 +260,56 @@ function colorAllRowTexts(nodes, color){
 
 }
 
-function colorRowsByStatus(tablesObjList){
+function colorRowsByStatus(tableObj){
 
     let status;
     let nodes;
 
-    for (let tableObj of tablesObjList){
+    for (let i = 0; i < tableObj.rows.length; i++){
+            
+        status = tableObj.rows[i].get("Status");
+        nodes = tableObj.table.rows[i+2].childNodes;
+        
+        if (status === "Queued"){
+            
+            colorAllRowTexts(nodes, "#939393"); //Grey
+            
+        } else if (status === "Rendering"){
+            
+            colorAllRowTexts(nodes, "#EE9616"); //Orange         
+            
+        } else if (status === "Completed"){
+            
+        colorAllRowTexts(nodes, "#95ff8f"); //Green
+        
+        } else {
+            
+            colorAllRowTexts(nodes, "#E74D31") //Red
+            
+        }            
+    
+    }
 
-        let eligible = true;
+}
+
+function colorAllTablesRowsByStatus(tablesObjList){
+
+    
+
+    for (let tableObj of tablesObjList){
         
         if (tableObj.rows.length == 0){ //No Row in table
-            eligible = false;
+            continue;
         }
 
         if (!tableObj.rows[0].has("Status")){ // Table doesn't have Status
-            eligible = false;
+            continue;
         }
 
 
-        if (eligible){
-
-            for (let i = 0; i < tableObj.rows.length; i++){
-                
-                status = tableObj.rows[i].get("Status");
-                nodes = tableObj.table.rows[i+2].childNodes;
-                
-                if (status === "Queued"){
-                    
-                    colorAllRowTexts(nodes, "#939393"); //Grey
-                    
-                } else if (status === "Rendering"){
-                    
-                    colorAllRowTexts(nodes, "#EE9616"); //Orange         
-                    
-                } else if (status === "Completed"){
-                    
-                colorAllRowTexts(nodes, "#95ff8f"); //Green
-                
-                } else {
-                    
-                    colorAllRowTexts(nodes, "#E74D31") //Red
-                    
-                }            
+        colorRowsByStatus(tableObj);
             
-            }
-            
-        }
+        
     }
 
 }
@@ -445,6 +406,86 @@ function loadData(tableObjList, data){
 
 
 
+// ------------- ROW SELECTION ------------ //
+function selectRowListener(tableObj){
+
+    let rows = tableObj.table.getElementsByTagName("tr");
+
+    Array.from(rows).forEach((row, index) => {
+        row.addEventListener("click", () => {
+    
+            let nodes;            
+            let table = row.parentNode;
+
+            for (let i = 0; i<table.rows.length; i++){ //Remove Selection of all rows
+    
+                nodes = table.rows[i].childNodes;
+    
+                for(let j = 0; j < nodes.length; j++){
+                    
+                    if (nodes[j].nodeName.toLowerCase() === "td"){
+                        
+                        nodes[j].classList.remove("selectRow");
+            
+                    }
+            
+                }
+    
+            }
+    
+    
+            if (index >= 2){
+
+                if (tableObj.name === "Plans"){                    
+                    tableObj.rowSelected = index-2;
+                    console.log(tableObj.rows[index-2].get("Path"));
+                } else if (tableObj.name === "Slaves"){
+                    tableObj.rowSelected = index-2;
+                    console.log(tableObj.rows[index-2].get("Machine"));
+                }
+    
+                nodes = row.childNodes;
+    
+                for(let j = 0; j < nodes.length; j++){ //Add Selection to the row
+                    
+                    if (nodes[j].nodeName.toLowerCase() === "td"){
+                        
+                        nodes[j].classList.add("selectRow");
+            
+                    }
+            
+                }
+                
+            }
+    
+    
+        });
+    });
+
+}
+
+
+function removeSelectedRow(tableObj){
+
+    if (tableObj.rowSelected === undefined || tableObj.rows.length === 0){ //No row Selected
+        console.log("Noting selected");
+        return;
+    }
+
+    console.log("Row Selected: " + tableObj.rowSelected.toString());
+    tableObj.rows.splice(tableObj.rowSelected, 1);
+
+    clearTable(tableObj);
+    addAllRows(tableObj);
+    colorEvenRows(tableObj);
+    colorRowsByStatus(tableObj);
+
+    selectRowListener(tableObj);
+
+    tableObj.rowSelected = undefined;
+
+
+}
 
 // ----------- INIT TABLES ----------- //
 
@@ -561,10 +602,10 @@ clearAllTables(tablesObjList);
 createAllTablesRows(tablesObjList);
 
 colorAllTablesEvenRows(tablesObjList);
-colorRowsByStatus(tablesObjList);
+colorAllTablesRowsByStatus(tablesObjList);
 
-
-
+selectRowListener(plansTableObj)
+selectRowListener(slavesTableObj)
 
 
 
@@ -613,82 +654,23 @@ openBtn.addEventListener("click", () => { //Open Button
         createAllTablesRows(tablesObjList);
 
         colorAllTablesEvenRows(tablesObjList);
-        colorRowsByStatus(tablesObjList);
+        colorAllTablesRowsByStatus(tablesObjList);
 
     });
     
 
 });
 
+// ------------------- REMOVE BUTTON -------------------------- //
+plansRemoveBtn.addEventListener("click", () => { //REMOVE PLANS ROW
 
 
+    removeSelectedRow(plansTableObj);
 
+});
 
+slavesRemoveBtn.addEventListener("click", () => { //REMOVE SLAVES ROW
 
-// ------------- ROW SELECTION ------------ //
-let plansRows = plansTable.getElementsByTagName("tr");
-let plansRowSelected;
+    removeSelectedRow(slavesTableObj);
 
-let slavesRows = slavesTable.getElementsByTagName("tr");
-let slavesRowSelected;
-
-function selectRowListener(tableObj){
-
-    let rows = tableObj.table.getElementsByTagName("tr");
-
-    Array.from(rows).forEach((row, index) => {
-        row.addEventListener("click", () => {
-    
-            let nodes;            
-            let table = row.parentNode;
-
-            for (let i = 0; i<table.rows.length; i++){ //Remove Selection of all rows
-    
-                nodes = table.rows[i].childNodes;
-    
-                for(let j = 0; j < nodes.length; j++){
-                    
-                    if (nodes[j].nodeName.toLowerCase() === "td"){
-                        
-                        nodes[j].classList.remove("selectRow");
-            
-                    }
-            
-                }
-    
-            }
-    
-    
-            if (index >= 2){
-
-                if (tableObj.name === "Plans"){                    
-                    plansRowSelected = index-2;
-                    console.log(tableObj.rows[index-2].get("Path"));
-                } else if (tableObj.name === "Slaves"){
-                    slavesRowSelected = index-2;
-                    console.log(tableObj.rows[index-2].get("Machine"));
-                }
-    
-                nodes = row.childNodes;
-    
-                for(let j = 0; j < nodes.length; j++){ //Add Selection to the row
-                    
-                    if (nodes[j].nodeName.toLowerCase() === "td"){
-                        
-                        nodes[j].classList.add("selectRow");
-            
-                    }
-            
-                }
-                
-            }
-    
-    
-        });
-    });
-
-}
-
-selectRowListener(plansTableObj, "plansTable")
-selectRowListener(slavesTableObj, "slavesTable")
-
+});
