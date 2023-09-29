@@ -51,6 +51,8 @@ function addAllRows(tableObj){
     }
 
     selectRowListener(tableObj);
+    doubleClickRowListener(tableObj);
+
 }
 
 function createAllTablesRows(tableObjList){
@@ -64,51 +66,6 @@ function createAllTablesRows(tableObjList){
 }
 
 // ----------- COLOR ----------- //
-function colorTds(nodes, color){
-
-    for(let j = 0; j < nodes.length; j++){
-                
-        if (nodes[j].nodeName.toLowerCase() === "td"){
-
-            nodes[j].style.background = color; 
-
-        } 
-
-    }
-
-}
-
-function colorEvenRows(tableObj){
-
-    for (let i=0; i < tableObj.rows.length; i++){
-
-        let nodes = tableObj.table.rows[i+2].childNodes;
-
-        if (i % 2 === 1){
-            
-            colorTds(nodes, "#292929");
-            
-        } else {
-
-            colorTds(nodes, "#1a1a1a");
-
-        }
-
-    }
-
-}
-
-function colorAllTablesEvenRows(tablesObjList){
-
-    for(let tableObj of tablesObjList){
-
-        colorEvenRows(tableObj);
-        
-    }
-
-}
-
-
 function colorAllRowTexts(nodes, color){
 
     for(let j = 0; j < nodes.length; j++){
@@ -133,7 +90,7 @@ function colorRowsByStatus(tableObj){
         status = tableObj.rows[i].get("Status");
         nodes = tableObj.table.rows[i+2].childNodes;
         
-        if (status === "Queued"){
+        if (status === "Queued" || status === "Pending"){
             
             colorAllRowTexts(nodes, "#939393"); //Grey
             
@@ -267,6 +224,32 @@ function loadData(tableObjList, data){
 }
 
 // ------------- ROW SELECTION ------------ //
+function doubleClickRowListener(tableObj){
+
+    if (tableObj.name != "Passes"){
+        return;
+    }
+
+    let rows = tableObj.table.getElementsByTagName("tr");
+
+    Array.from(rows).forEach((row, index) => {
+        row.addEventListener("dblclick", () => {
+             
+            let table = row.parentNode;
+
+            if (index >= 2){
+
+                let passesWindow = popupwindow("popups/passesPropertiesPopup.html", "Properties", 400, 800);
+                
+            }
+    
+    
+        });
+    });
+
+
+}
+
 function selectRowListener(tableObj){
 
     let rows = tableObj.table.getElementsByTagName("tr");
@@ -337,7 +320,6 @@ function removeSelectedRow(tableObj){
 
     clearTable(tableObj);
     addAllRows(tableObj);
-    colorEvenRows(tableObj);
     if (tableObj.rows.length != 0){
         if (tableObj.rows[0].has("Status")){
             colorRowsByStatus(tableObj);
@@ -504,7 +486,6 @@ let tablesObjList = [plansTableObj, passesTableObj, taskTableObj, slavesTableObj
 clearAllTables(tablesObjList);
 createAllTablesRows(tablesObjList);
 
-colorAllTablesEvenRows(tablesObjList);
 colorAllTablesRowsByStatus(tablesObjList);
 
 
@@ -552,7 +533,6 @@ openBtn.addEventListener("click", () => { //Open Button
         clearAllTables(tablesObjList);
         createAllTablesRows(tablesObjList);
 
-        colorAllTablesEvenRows(tablesObjList);
         colorAllTablesRowsByStatus(tablesObjList);
 
     });
@@ -577,13 +557,18 @@ slavesRemoveBtn.addEventListener("click", () => { //REMOVE SLAVES ROW
 
 });
 
+passesRemoveBtn.addEventListener("click", () => { //REMOVE PASSES ROW
+
+    removeSelectedRow(passesTableObj);
+
+});
 
 
 
 // ------------------- ADD BUTTON -------------------------- //
 plansAddBtn.addEventListener("click", () => { //Add plans row Button
 
-    let addWindow = popupwindow("popups/plansPropertiesPopup.html", "Porperties", 400, 200); //400*200
+    let addWindow = popupwindow("popups/plansPropertiesPopup.html", "Properties", 400, 200); //400*200
 
     addWindow.addEventListener("load", () => { //Wait for the Add window to load 
 
@@ -610,7 +595,6 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
                 plansTableObj.rows.push(newRow);
                 clearTable(plansTableObj);
                 addAllRows(plansTableObj);
-                colorEvenRows(plansTableObj);
 
                 plansTableObj.rowSelected = undefined;
 
@@ -625,7 +609,7 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
 
 slavesAddBtn.addEventListener("click", () => { //Add Slave machine
 
-    let addWindow = popupwindow("popups/slavesPropertiesPopup.html", "Porperties", 400, 200); //400*200
+    let addWindow = popupwindow("popups/slavesPropertiesPopup.html", "Properties", 400, 200); //400*200
 
     addWindow.addEventListener("load", () => { //Wait for the Add window to load 
 
@@ -652,10 +636,51 @@ slavesAddBtn.addEventListener("click", () => { //Add Slave machine
                 slavesTableObj.rows.push(newRow);
                 clearTable(slavesTableObj);
                 addAllRows(slavesTableObj);
-                colorEvenRows(slavesTableObj);
                 colorRowsByStatus(slavesTableObj);
 
                 slavesTableObj.rowSelected = undefined;
+
+            }
+
+        });
+
+    }, true);
+
+});
+
+passesAddBtn.addEventListener("click", () => { //Add Slave machine
+
+    let addWindow = popupwindow("popups/addPassesPopup.html", "Properties", 400, 200); //400*200
+
+    addWindow.addEventListener("load", () => { //Wait for the Add window to load 
+
+        let passesInput = addWindow.document.querySelector("#passesInput");
+        let addAcceptBtn = addWindow.document.querySelector("#acceptBtn");
+
+        addAcceptBtn.addEventListener("click", () => { //Accept
+
+            let allInputs = [passesInput];
+
+            if(!checkAllInputs(allInputs)){ //Check if all inputs are filled
+
+                addWindow.close();
+                
+                let name = passesInput.value;
+
+                let row = [
+                    ["Name", name],
+                    ["Status", "Pending"],
+                    ["Progress", "0% (0/100)"],
+                    ["Frames", "1-100"]
+                ];
+
+                let newRow = new Map(row);
+                passesTableObj.rows.push(newRow);
+                clearTable(passesTableObj);
+                addAllRows(passesTableObj);
+                colorRowsByStatus(passesTableObj);
+
+                passesTableObj.rowSelected = undefined;
 
             }
 

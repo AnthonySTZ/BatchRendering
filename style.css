@@ -279,8 +279,17 @@ h1{
     font-family: system-ui;
     font-size: 1.7rem;
     text-align: center;
-    background-color: #1a1a1a;
     color: #d9d9d9;
+}
+
+.tableList tr{
+    background-color: #1a1a1a;
+}
+
+.tableList tr:nth-child(odd){
+
+    background-color: #292929;
+
 }
 
 .tableList th:empty{
@@ -291,11 +300,6 @@ h1{
 
 }
 
-.tableList td:empty{
-
-    background-color: #1a1a1a;
-
-}
 
 .tableSeparation td:empty{
 
