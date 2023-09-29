@@ -239,6 +239,8 @@ function doubleClickRowListener(tableObj){
 
             if (index >= 2){
 
+                let sceneObjects = JSON.stringify(plansTableObj.sceneObjects[plansTableObj.rowSelected]);
+                localStorage.setItem("sceneObjects", sceneObjects);
                 let passesWindow = popupwindow("popups/passesPropertiesPopup.html", "Properties", 400, 800);
                 
             }
@@ -283,6 +285,12 @@ function selectRowListener(tableObj){
 
                 if (tableObj.name === "Plans"){
                     console.log(tableObj.rows[index-2].get("Path"));
+
+                    clearTable(passesTableObj); //Show passes for selected shot
+                    passesTableObj.rows = passesTableObj.passesLists[index - 2];
+                    addAllRows(passesTableObj);
+
+
                 } else if (tableObj.name === "Slaves"){
                     console.log(tableObj.rows[index-2].get("Machine"));
                 }
@@ -317,6 +325,14 @@ function removeSelectedRow(tableObj){
 
     console.log("Row Selected: " + tableObj.rowSelected.toString());
     tableObj.rows.splice(tableObj.rowSelected, 1);
+
+    if (tableObj.name === "Plans"){
+        plansTableObj.sceneObjects.splice(tableObj.rowSelected, 1);
+        passesTableObj.passesLists.splice(tableObj.rowSelected, 1);
+        clearTable(passesTableObj);
+
+
+    }
 
     clearTable(tableObj);
     addAllRows(tableObj);
@@ -361,9 +377,24 @@ function checkAllInputs(inputs){
 
 }
 
+// ----------- UTILITY ------------- //
+function getAllObjects(text){
 
+    let objects = [];
 
+    while (text.indexOf("polymesh") != -1){
 
+        text = text.slice(text.indexOf("polymesh") + 18); //cut to Object Name 
+
+        let objIndex = text.indexOf("/");
+        let obj = text.slice(0, objIndex);
+        objects.push(obj);
+
+    }
+
+    return objects;
+
+}
 
 
 
@@ -379,19 +410,11 @@ let plansRow1Values = [
     ["Path", "maya2325.ass"]
 ];
 
-let plansRow2Values = [
-    ["Software", "Maya"],
-    ["Path", "mayaMonCul.ass"]
-];
-
-let plansRow1Obj = new Map(plansRow1Values);
-let plansRow2Obj = new Map(plansRow2Values);
-
-
 let plansTableObj = {
     name : "Plans",
     table : plansTable,
-    rows : [plansRow1Obj, plansRow2Obj],
+    rows : [],
+    sceneObjects : [],
     rowSelected : undefined
 };
 
@@ -414,11 +437,11 @@ let passesRow2Values = [
 let passesRow1Obj = new Map(passesRow1Values);
 let passesRow2Obj = new Map(passesRow2Values);
 
-
 let passesTableObj = {
     name : "Passes",
     table : passesTable,
-    rows : [passesRow1Obj, passesRow2Obj],
+    passesLists : [[passesRow1Obj, passesRow2Obj], [passesRow2Obj]],
+    rows : [],
     rowSelected : undefined
 };
 
@@ -487,9 +510,6 @@ clearAllTables(tablesObjList);
 createAllTablesRows(tablesObjList);
 
 colorAllTablesRowsByStatus(tablesObjList);
-
-
-
 
 
 
@@ -583,8 +603,7 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
 
                 addWindow.close();
 
-                let path = fileInput.value;
-
+                let path = fileInput.value.replaceAll("\\", "/");
 
                 let row = [
                     ["Software", "Maya"],
@@ -597,6 +616,22 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
                 addAllRows(plansTableObj);
 
                 plansTableObj.rowSelected = undefined;
+
+                if (passesTableObj.passesLists.length < plansTableObj.rows.length){
+                    passesTableObj.passesLists.push([]); //Add empty list for new passes
+                }
+
+
+
+                fetch(path)
+                    .then((res) => res.text())
+                    .then((text) => {
+
+                        let sceneObjects = getAllObjects(text);
+                        plansTableObj.sceneObjects.push(sceneObjects);
+
+
+                    })
 
             }
 
