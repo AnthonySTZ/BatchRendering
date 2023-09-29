@@ -386,8 +386,12 @@ function getAllObjects(text){
 
         text = text.slice(text.indexOf("polymesh") + 18); //cut to Object Name 
 
+        
         let objIndex = text.indexOf("/");
-        let obj = text.slice(0, objIndex);
+        let obj = {
+                    name: text.slice(0, objIndex), 
+                    visibility : 0
+                  };
         objects.push(obj);
 
     }
