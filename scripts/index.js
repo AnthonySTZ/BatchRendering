@@ -584,6 +584,12 @@ passesRemoveBtn.addEventListener("click", () => { //REMOVE PASSES ROW
 
 });
 
+taskRemoveBtn.addEventListener("click", () => { //REMOVE PASSES ROW
+
+    removeSelectedRow(taskTableObj);
+
+});
+
 
 
 // ------------------- ADD BUTTON -------------------------- //

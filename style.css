@@ -184,7 +184,7 @@ h1{
 
 }
 
-.AddRemoveBox ul li{
+.AddRemoveBox ul li .button{
 
     display: flex;
     align-items: center;
@@ -196,6 +196,19 @@ h1{
     margin-right: 4px;
     background-color: #1a1a1a;
     border-radius: 8px;
+}
+
+#renderBtn, #renderAllBtn{
+    margin-left: 10px;
+    padding-bottom: 2px;
+    font-family: system-ui;
+    height: 36px;
+    width: 150px;
+    font-size: 1.4rem;
+    text-align: center;
+    color: #d9d9d9;
+    background-color: #292929;
+
 }
 
 .button:hover{
@@ -314,6 +327,10 @@ h1{
     height: auto;
     padding-top: 2px;
 
+}
+
+*:focus {
+    outline: none;
 }
 
 .selectRow {
