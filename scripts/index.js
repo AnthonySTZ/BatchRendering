@@ -13,11 +13,18 @@ const taskRemoveBtn = document.querySelector("#taskRemoveBtn");
 const slavesAddBtn = document.querySelector("#slavesAddBtn");
 const slavesRemoveBtn = document.querySelector("#slavesRemoveBtn");
 
+//Render Button
+const renderBtn = document.querySelector("#renderBtn");
+const renderAllBtn = document.querySelector("#renderAllBtn");
+
 // All table variables
 const plansTable = document.querySelector("#plansTable");
 const passesTable = document.querySelector("#passesTable");
 const taskTable = document.querySelector("#taskTable");
 const slavesTable = document.querySelector("#slavesTable");
+
+//Kick location
+const kickLocation = "C:/Program Files/Autodesk/Arnold/maya2023/bin"
 
 // ----------- CREATE TABLES ----------- //
 function addRow(rowObj){
@@ -688,6 +695,11 @@ slavesAddBtn.addEventListener("click", () => { //Add Slave machine
 
 passesAddBtn.addEventListener("click", () => { //Add Slave machine
 
+    if (plansTableObj.rowSelected === undefined){
+        console.log("No plans Selected");
+        return;
+    }
+
     let addWindow = popupwindow("popups/addPassesPopup.html", "Properties", 400, 200); //400*200
 
     addWindow.addEventListener("load", () => { //Wait for the Add window to load 
@@ -736,5 +748,22 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
         });
 
     }, true);
+
+});
+
+
+renderBtn.addEventListener("click", () => {
+
+    if (passesTableObj.rowSelected === undefined){ //Check if nothing is selected
+        console.log("Nothing Selected")
+        return;
+    }
+
+    let command = JSON.stringify({kick : kickLocation, path: plansTableObj.rows[plansTableObj.rowSelected].get("Path")});
+
+    const renderProcess = spawn('python',["scripts/render.py", command]);
+    renderProcess.stdout.on('data', (data) => {
+        console.log(data.toString('utf8'));
+    });
 
 });
