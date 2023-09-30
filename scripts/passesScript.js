@@ -1,8 +1,8 @@
 const objectsTable = document.querySelector(".tableList");
+const acceptBtn = document.querySelector("#acceptBtn");
 
 let sceneObjects = JSON.parse(localStorage.getItem("sceneObjects"));
 
-console.log(sceneObjects);
 
 function createRadioButton(obj, visibility){
 
@@ -14,6 +14,12 @@ function createRadioButton(obj, visibility){
     if (obj.visibility === visibility){
         button.checked = true;
     }
+
+    button.addEventListener("change", () => {
+
+        obj.visibility = visibility;        
+
+    });
 
     cell.appendChild(button);
 
@@ -46,4 +52,10 @@ function createAllRows(objects){
 
 createAllRows(sceneObjects);
 
+acceptBtn.addEventListener("click", () => {
 
+
+    let sceneObjectsText = JSON.stringify(sceneObjects);
+    localStorage.setItem("returnSceneObjects", sceneObjectsText);
+
+});

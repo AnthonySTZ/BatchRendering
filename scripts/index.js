@@ -235,14 +235,28 @@ function doubleClickRowListener(tableObj){
     Array.from(rows).forEach((row, index) => {
         row.addEventListener("dblclick", () => {
              
-            let table = row.parentNode;
-
             if (index >= 2){
 
-                let sceneObjects = JSON.stringify(plansTableObj.sceneObjects[plansTableObj.rowSelected]);
+                let sceneObjects = JSON.stringify(passesTableObj.visibilityLists[plansTableObj.rowSelected][index-2]);
+                console.log(passesTableObj.visibilityLists[plansTableObj.rowSelected][index-2]);
                 localStorage.setItem("sceneObjects", sceneObjects);
                 let passesWindow = popupwindow("popups/passesPropertiesPopup.html", "Properties", 400, 800);
                 
+                passesWindow.addEventListener("load", () => {
+
+                    
+                    passesWindow.document.querySelector("#acceptBtn").addEventListener("click", () => {
+                        
+                        let returnSceneObjects = JSON.parse(localStorage.getItem("returnSceneObjects"));
+                        passesTableObj.visibilityLists[plansTableObj.rowSelected][index-2] = returnSceneObjects;
+                        
+                        passesWindow.close();
+                        
+                        console.log(returnSceneObjects);
+                        
+                    });
+                    
+                });
             }
     
     
@@ -423,28 +437,11 @@ let plansTableObj = {
 };
 
 // ----------- //
-
-let passesRow1Values = [
-    ["Name", "BaseColor.bc"],
-    ["Status", "Rendering"],
-    ["Progress", "80% (80/100)"],
-    ["Frames", "1-100"]
-];
-
-let passesRow2Values = [
-    ["Name", "depth"],
-    ["Status", "Completed"],
-    ["Progress", "100% (100/100)"],
-    ["Frames", "1-100"]
-];
-
-let passesRow1Obj = new Map(passesRow1Values);
-let passesRow2Obj = new Map(passesRow2Values);
-
 let passesTableObj = {
     name : "Passes",
     table : passesTable,
-    passesLists : [[passesRow1Obj, passesRow2Obj], [passesRow2Obj]],
+    passesLists : [],
+    visibilityLists : [],
     rows : [],
     rowSelected : undefined
 };
@@ -625,17 +622,13 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
                     passesTableObj.passesLists.push([]); //Add empty list for new passes
                 }
 
+                if (passesTableObj.visibilityLists.length < plansTableObj.rows.length){
+                    passesTableObj.visibilityLists.push([]); //Add empty list for new passes visibility
+                }
 
 
-                fetch(path)
-                    .then((res) => res.text())
-                    .then((text) => {
 
-                        let sceneObjects = getAllObjects(text);
-                        plansTableObj.sceneObjects.push(sceneObjects);
-
-
-                    })
+                
 
             }
 
@@ -714,12 +707,23 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
                 ];
 
                 let newRow = new Map(row);
-                passesTableObj.rows.push(newRow);
+                passesTableObj.passesLists[plansTableObj.rowSelected].push(newRow);
                 clearTable(passesTableObj);
                 addAllRows(passesTableObj);
                 colorRowsByStatus(passesTableObj);
-
                 passesTableObj.rowSelected = undefined;
+
+                let path = plansTableObj.rows[plansTableObj.rowSelected].get("Path");
+
+                fetch(path)
+                    .then((res) => res.text())
+                    .then((text) => {
+
+                        let sceneObjects = getAllObjects(text);
+                        passesTableObj.visibilityLists[plansTableObj.rowSelected].push(sceneObjects);
+
+
+                    });
 
             }
 
