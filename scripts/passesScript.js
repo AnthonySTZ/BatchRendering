@@ -1,5 +1,6 @@
 const objectsTable = document.querySelector(".tableList");
 const acceptBtn = document.querySelector("#acceptBtn");
+const cameraSelect = document.querySelector("#cameraSelect");
 
 let sceneObjects = JSON.parse(localStorage.getItem("sceneObjects"));
 
@@ -27,10 +28,47 @@ function createRadioButton(obj, visibility){
 
 }
 
+function createCameraOption(obj){
+
+    let cell = document.createElement("option");
+    cell.innerHTML = obj.name;
+    cell.setAttribute("value", obj.name);
+
+    if (obj.selected === 1){
+
+        cell.setAttribute("selected", "selected");
+
+    }
+
+    cameraSelect.addEventListener("change", () => {
+
+        console.log(cameraSelect.options[cameraSelect.selectedIndex].value)
+
+        if (cameraSelect.options[cameraSelect.selectedIndex].value === obj.name){
+
+            obj.selected = 1;
+
+        } else {
+
+            obj.selected = 0;
+
+        }
+
+    });
+
+    return cell;
+
+}
+
 function createAllRows(objects){
 
     for (let obj of objects){
 
+        if (obj.type === "camera"){
+            let option = createCameraOption(obj);
+            cameraSelect.appendChild(option);
+            continue;
+        }
 
         let row = document.createElement("tr");
         let cell = document.createElement("td");

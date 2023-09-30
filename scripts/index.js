@@ -403,17 +403,46 @@ function getAllObjects(text){
 
     let objects = [];
 
-    while (text.indexOf("polymesh") != -1){
+    let polyText = text;
 
-        text = text.slice(text.indexOf("polymesh") + 18); //cut to Object Name 
+    while (polyText.indexOf("polymesh") != -1){
+
+        polyText = polyText.slice(polyText.indexOf("polymesh") + 18); //cut to Object Name 
 
         
-        let objIndex = text.indexOf("/");
+        let objIndex = polyText.indexOf("/");
         let obj = {
-                    name: text.slice(0, objIndex), 
+                    type : "polymesh",
+                    name: polyText.slice(0, objIndex), 
                     visibility : 0
                   };
         objects.push(obj);
+
+    }
+
+    let cameraText = text;
+
+    let camNb = 0;
+
+    while (cameraText.indexOf("persp_camera") != -1){
+
+        cameraText = cameraText.slice(cameraText.indexOf("persp_camera") + 22); //cut to Object Name 
+
+        
+        let objIndex = cameraText.indexOf("/");
+        let obj = {
+                    type : "camera",
+                    name: cameraText.slice(0, objIndex), 
+                    selected : 0
+                  };
+
+        if (camNb === 0){
+            obj.selected = 1;
+        }
+
+        objects.push(obj);
+
+        camNb += 1;
 
     }
 
@@ -759,7 +788,9 @@ renderBtn.addEventListener("click", () => {
         return;
     }
 
-    let command = JSON.stringify({kick : kickLocation, path: plansTableObj.rows[plansTableObj.rowSelected].get("Path")});
+    let sceneSettings = passesTableObj.visibilityLists[plansTableObj.rowSelected][passesTableObj.rowSelected];
+
+    let command = JSON.stringify({kick : kickLocation, path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"), settings: sceneSettings});
 
     const renderProcess = spawn('python',["scripts/render.py", command]);
     renderProcess.stdout.on('data', (data) => {

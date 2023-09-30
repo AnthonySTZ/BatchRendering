@@ -1,5 +1,8 @@
-Gérer les passes... ca va etre chiant mdr
-
 - Tester une scene avec des groupes 
 
+- change visibility objects on render
+
 - refaire le système de save et open
+
+- activer/désactiver la fenetre de rendu
+* l'Attacher à l'UI
