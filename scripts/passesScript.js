@@ -31,7 +31,7 @@ function createRadioButton(obj, visibility){
 function createCameraOption(obj){
 
     let cell = document.createElement("option");
-    cell.innerHTML = obj.name;
+    cell.innerHTML = obj.name.slice(0, obj.name.indexOf("/"));
     cell.setAttribute("value", obj.name);
 
     if (obj.selected === 1){

@@ -6,3 +6,5 @@
 
 - activer/désactiver la fenetre de rendu
 * l'Attacher à l'UI
+
+kick -i path -c "/camera1/cameraShape1"

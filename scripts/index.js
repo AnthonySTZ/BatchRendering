@@ -429,7 +429,7 @@ function getAllObjects(text){
         cameraText = cameraText.slice(cameraText.indexOf("persp_camera") + 22); //cut to Object Name 
 
         
-        let objIndex = cameraText.indexOf("/");
+        let objIndex = cameraText.indexOf("\n");
         let obj = {
                     type : "camera",
                     name: cameraText.slice(0, objIndex), 
@@ -791,6 +791,8 @@ renderBtn.addEventListener("click", () => {
     let sceneSettings = passesTableObj.visibilityLists[plansTableObj.rowSelected][passesTableObj.rowSelected];
 
     let command = JSON.stringify({kick : kickLocation, path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"), settings: sceneSettings});
+
+    // console.log(command);
 
     const renderProcess = spawn('python',["scripts/render.py", command]);
     renderProcess.stdout.on('data', (data) => {

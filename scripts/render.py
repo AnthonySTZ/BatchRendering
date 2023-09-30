@@ -5,8 +5,16 @@ import json
 data_in = json.loads(sys.argv[1])
 kick = data_in["kick"].replace("/", "\\")
 path = data_in["path"]
+settings = data_in["settings"]
 
-command = "kick -i " + path
+for element in settings:
+    if "selected" in element:
+        if element["selected"] == 1:
+            camera = "/" + element["name"]
+            break
+
+
+command = "kick -i " + path + " -c " + camera
 
 subprocess.run(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, shell=True, cwd=kick)
 
