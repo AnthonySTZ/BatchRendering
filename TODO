@@ -1,3 +1,5 @@
+- get ray depth and samples in js
+
 - Tester une scene avec des groupes 
 
 - change visibility objects on render

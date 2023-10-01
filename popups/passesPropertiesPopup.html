@@ -25,51 +25,93 @@
 
         <div class="renderSettingsDiv">
 
-            <table class="renderSettingsTable">
-                <tr>
-                    <td>Active Camera</td>
-                    <td colspan="2">
-                        <select id="cameraSelect" name="cameraSelect">
-                            <!-- <option value="camera1">camera1</option> -->
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Camera (AA)</td>
-                    <td><input type="number" class="inputNb" min="0" step="1" value="3" id="cameraSettingsNumber"></td>
-                    <td><input type="range" min="0" max="8"  value="3" class="slider" id="cameraSettingsSlider"></td>
-                </tr>
-                <tr>
-                    <td>Diffuse</td>
-                    <td><input type="number" class="inputNb" min="0" step="1" value="2" id="diffuseSettingsNumber"></td>
-                    <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="diffuseSettingsSlider"></td>
-                </tr> 
-                <tr>
-                    <td>Specular</td>
-                    <td><input type="number" class="inputNb" min="0" step="1" value="2" id="specularSettingsNumber"></td>
-                    <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="specularSettingsSlider"></td>
-                </tr>  
-                <tr>
-                    <td>Transmission</td>
-                    <td><input type="number" class="inputNb" min="0" step="1" value="2" id="transmissionSettingsNumber"></td>
-                    <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="transmissionSettingsSlider"></td>
-                </tr> 
-                <tr>
-                    <td>SSS</td>
-                    <td><input type="number" class="inputNb" min="0" step="1" value="2" id="sssSettingsNumber"></td>
-                    <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="sssSettingsSlider"></td>
-                </tr> 
-                <tr>
-                    <td>Volume Indirect</td>
-                    <td><input type="number" class="inputNb" min="0" step="1" value="2" id="volumeSettingsNumber"></td>
-                    <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="volumeSettingsSlider"></td>
-                </tr>
-                <tr>
-                    <td>Resolution</td>
-                    <td><input type="number" class="inputNb" min="0" step="1" value="1920" id="resX"></td>
-                    <td><input type="number" class="inputNb" min="0" step="1" value="1080" id="resY"></td>
-                </tr>
-            </table>
+            <div class="resolutionDiv">
+                <p>Resolution</p>
+                <input type="number" class="inputNb" min="0" step="1" value="1920" id="resX">
+                <input type="number" class="inputNb" min="0" step="1" value="1080" id="resY">
+            </div>
+
+            <div class="cameraChoiceDiv">
+            <p>Active Camera</p>
+            <select id="cameraSelect" name="cameraSelect">
+                <!-- <option value="camera1">camera1</option> -->
+            </select>
+                
+            </div>
+            <div class="renderSamplesDiv">
+                <input id="samplesCheck" type="checkbox">                    
+                <label class="renderSamplesMenu" for="samplesCheck"><img class="filter-white"/>Samples</label>
+                <table id="renderSamplesTable" class="renderSettingsTable">
+                    
+                    <tr>
+                        <td>Camera (AA)</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="3" id="cameraSettingsNumber"></td>
+                        <td><input type="range" min="0" max="8"  value="3" class="slider" id="cameraSettingsSlider"></td>
+                    </tr>
+                    <tr>
+                        <td>Diffuse</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="diffuseSettingsNumber"></td>
+                        <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="diffuseSettingsSlider"></td>
+                    </tr> 
+                    <tr>
+                        <td>Specular</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="specularSettingsNumber"></td>
+                        <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="specularSettingsSlider"></td>
+                    </tr>  
+                    <tr>
+                        <td>Transmission</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="transmissionSettingsNumber"></td>
+                        <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="transmissionSettingsSlider"></td>
+                    </tr> 
+                    <tr>
+                        <td>SSS</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="sssSettingsNumber"></td>
+                        <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="sssSettingsSlider"></td>
+                    </tr> 
+                    <tr>
+                        <td>Volume Indirect</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="volumeSettingsNumber"></td>
+                        <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="volumeSettingsSlider"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="renderDepthDiv">
+                <input id="depthCheck" type="checkbox">                    
+                <label class="renderDepthMenu" for="depthCheck"><img class="filter-white"/>Depth</label>
+                <table id="renderDepthTable" class="renderSettingsTable">
+                    
+                    <tr>
+                        <td>Camera (AA)</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="3" id="cameraSettingsNumber"></td>
+                        <td><input type="range" min="0" max="8"  value="3" class="slider" id="cameraSettingsSlider"></td>
+                    </tr>
+                    <tr>
+                        <td>Diffuse</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="diffuseSettingsNumber"></td>
+                        <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="diffuseSettingsSlider"></td>
+                    </tr> 
+                    <tr>
+                        <td>Specular</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="specularSettingsNumber"></td>
+                        <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="specularSettingsSlider"></td>
+                    </tr>  
+                    <tr>
+                        <td>Transmission</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="transmissionSettingsNumber"></td>
+                        <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="transmissionSettingsSlider"></td>
+                    </tr> 
+                    <tr>
+                        <td>SSS</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="sssSettingsNumber"></td>
+                        <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="sssSettingsSlider"></td>
+                    </tr> 
+                    <tr>
+                        <td>Volume Indirect</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="volumeSettingsNumber"></td>
+                        <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="volumeSettingsSlider"></td>
+                    </tr>
+                </table>
+            </div>
 
         </div>
 

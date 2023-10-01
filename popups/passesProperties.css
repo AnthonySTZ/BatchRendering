@@ -136,6 +136,34 @@ button:hover{
     border-right: 2px solid #242424;
 }
 
+.renderSettingsDiv{
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    flex-direction: column;
+    background-color: #3a3a3a;
+    border-left: 3px solid #2f2f2f;
+}
+
+
+
+.cameraChoiceDiv{
+    padding-top: 5px;
+    padding-left: 5px;
+    margin-bottom: 5px;
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    flex-direction: row;
+}
+
+.cameraChoiceDiv p{
+    margin-right: 15px;
+    font-family: system-ui;
+    font-weight: normal;
+    font-size: .8rem;
+}
+
 #cameraSelect {
 
     outline: none;
@@ -144,8 +172,8 @@ button:hover{
     text-align: center;
     color: #d9d9d9;
     font-size: .8rem;
-    border-radius: .4em;
-    height: 80%;
+    border-radius: .3em;
+    height: 20px;
     font-family: system-ui;
     font-weight: normal;
     width: max-content;
@@ -176,14 +204,47 @@ input:not(.inputNb, .slider):hover{
     cursor: pointer;
 }
 
+/* RESOLUTION DIV */
+.resolutionDiv{
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    font-family: system-ui;
+    font-weight: normal;
+    font-size: .8rem;
+    padding-top: 5px;
+    padding-left: 5px;
+}
+
 
 
 /* RENDER SETTINGS TABLE */
 
+.renderSamplesDiv, .renderDepthDiv{
+    width: 100%;
+    padding: 0;
+}
+
+.renderSamplesMenu, .renderDepthMenu{
+    width: 100%;
+    display: flex;
+    height: 20px;
+    font-family: system-ui;
+    font-weight: normal;
+    font-size: .8rem;
+    border-top: 3px solid #2f2f2f;
+    
+}
+
+.renderSamplesMenu img, .renderDepthMenu img{
+    margin-right: 20px;
+    background-size:cover;
+    padding-right: 20px;
+    background-image: url("../res/arrow_right.svg");
+}
+
 .renderSettingsTable{
     width: 100%;
-    background-color: #3a3a3a;
-    border-left: 3px solid #2f2f2f;
     padding-bottom: 5px;    
     padding-right: 15px;
 }
@@ -192,7 +253,8 @@ input:not(.inputNb, .slider):hover{
 .renderSettingsTable td{
 
     padding-top: 5px;
-    padding-left: 15px;
+    padding-right: 15px;
+    padding-left: 5px;
 
 }
 
@@ -200,7 +262,7 @@ input:not(.inputNb, .slider):hover{
 
     font-family: system-ui;
     font-weight: normal;
-    font-size: .9rem;
+    font-size: .8rem;
 
 } 
 
@@ -247,3 +309,22 @@ input[type=number]::-webkit-outer-spin-button {
     border-radius: .2em;
 
   }
+
+#samplesCheck, #depthCheck, .renderSettingsTable{
+    display: none;
+}
+
+#samplesCheck:checked~#renderSamplesTable, #depthCheck:checked~#renderDepthTable{
+    display: block;
+}
+
+#samplesCheck:checked~.renderSamplesMenu img, #depthCheck:checked~.renderDepthMenu img  {
+    background-image: url("../res/arrow_down.svg");
+}
+
+
+.filter-white{
+       
+    filter: invert(83%) sepia(0%) saturate(7489%) hue-rotate(113deg) brightness(103%) contrast(99%);    
+
+}
