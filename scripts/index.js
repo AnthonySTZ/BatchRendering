@@ -251,7 +251,7 @@ function doubleClickRowListener(tableObj){
                 let sceneObjects = JSON.stringify(passesTableObj.visibilityLists[plansTableObj.rowSelected][index-2]);
                 console.log(passesTableObj.visibilityLists[plansTableObj.rowSelected][index-2]);
                 localStorage.setItem("sceneObjects", sceneObjects);
-                let passesWindow = popupwindow("popups/passesPropertiesPopup.html", "Properties", 400, 800);
+                let passesWindow = popupwindow("popups/passesPropertiesPopup.html", "Properties", 700, 800);
                 
                 passesWindow.addEventListener("load", () => {
 
@@ -449,6 +449,18 @@ function getAllObjects(text){
         camNb += 1;
 
     }
+
+    let renderSettings = {
+        type: "renderSettings",
+        camera: 3,
+        diffuse: 2,
+        specular: 2,
+        transmission: 2,
+        sss: 2,
+        volume: 2
+    }
+
+    objects.push(renderSettings);
 
     return objects;
 

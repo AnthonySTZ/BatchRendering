@@ -18,6 +18,9 @@ const volumeSettingsSlider = document.querySelector("#volumeSettingsSlider");
 
 let sceneObjects = JSON.parse(localStorage.getItem("sceneObjects"));
 
+let settingsNumbers = [cameraSettingsNumber, diffuseSettingsNumber, specularSettingsNumber, transmissionSettingsNumber, sssSettingsNumber, volumeSettingsNumber]
+let settingsSliders = [cameraSettingsSlider, diffuseSettingsSlider, specularSettingsSlider, transmissionSettingsSlider, sssSettingsSlider, volumeSettingsSlider]
+
 
 function createRadioButton(obj, visibility){
 
@@ -74,7 +77,103 @@ function createCameraOption(obj){
 
 }
 
-function createAllRows(objects){
+function createObjRow(obj){
+    let row = document.createElement("tr");
+    let cell = document.createElement("td");
+    let show = createRadioButton(obj, 0);
+    let hidden = createRadioButton(obj, 1);
+    let matte = createRadioButton(obj, 2);
+    let phantom = createRadioButton(obj, 3);
+    cell.innerText = obj.name;
+    row.appendChild(cell);
+    row.appendChild(show);
+    row.appendChild(hidden);
+    row.appendChild(matte);
+    row.appendChild(phantom);
+    objectsTable.appendChild(row);
+}
+
+function updateRenderSettings(obj){
+
+    cameraSettingsNumber.value = obj.camera;
+    diffuseSettingsNumber.value = obj.diffuse;
+    specularSettingsNumber.value = obj.specular;
+    transmissionSettingsNumber.value = obj.transmission;
+    sssSettingsNumber.value = obj.sss;
+    volumeSettingsNumber.value = obj.volume;
+
+    cameraSettingsSlider.value = obj.camera;
+    diffuseSettingsSlider.value = obj.diffuse;
+    specularSettingsSlider.value = obj.specular;
+    transmissionSettingsSlider.value = obj.transmission;
+    sssSettingsSlider.value = obj.sss;
+    volumeSettingsSlider.value = obj.volume;
+
+    cameraSettingsNumber.addEventListener("change", () => {
+
+        obj.camera = cameraSettingsNumber.value;
+
+    });
+    diffuseSettingsNumber.addEventListener("change", () => {
+
+        obj.diffuse = diffuseSettingsNumber.value;
+
+    });
+    specularSettingsNumber.addEventListener("change", () => {
+
+        obj.specular = specularSettingsNumber.value;
+
+    });
+    transmissionSettingsNumber.addEventListener("change", () => {
+
+        obj.transmission = transmissionSettingsNumber.value;
+
+    });
+    sssSettingsNumber.addEventListener("change", () => {
+
+        obj.sss = sssSettingsNumber.value;
+
+    });
+    volumeSettingsNumber.addEventListener("change", () => {
+
+        obj.volume = volumeSettingsNumber.value;
+
+    });
+
+    cameraSettingsSlider.addEventListener("change", () => {
+
+        obj.camera = cameraSettingsSlider.value;
+
+    });
+    diffuseSettingsSlider.addEventListener("change", () => {
+
+        obj.diffuse = diffuseSettingsSlider.value;
+
+    });
+    specularSettingsSlider.addEventListener("change", () => {
+
+        obj.specular = specularSettingsSlider.value;
+
+    });
+    transmissionSettingsSlider.addEventListener("change", () => {
+
+        obj.transmission = transmissionSettingsSlider.value;
+
+    });
+    sssSettingsSlider.addEventListener("change", () => {
+
+        obj.sss = sssSettingsSlider.value;
+
+    });
+    volumeSettingsSlider.addEventListener("change", () => {
+
+        obj.volume = volumeSettingsSlider.value;
+
+    });
+
+}
+
+function updateAllDatas(objects){
 
     for (let obj of objects){
 
@@ -84,25 +183,25 @@ function createAllRows(objects){
             continue;
         }
 
-        let row = document.createElement("tr");
-        let cell = document.createElement("td");
-        let show = createRadioButton(obj, 0);
-        let hidden = createRadioButton(obj, 1);
-        let matte = createRadioButton(obj, 2);
-        let phantom = createRadioButton(obj, 3);
-        cell.innerText = obj.name;
-        row.appendChild(cell);
-        row.appendChild(show);
-        row.appendChild(hidden);
-        row.appendChild(matte);
-        row.appendChild(phantom);
-        objectsTable.appendChild(row);
+        if (obj.type === "polymesh"){
+
+            createObjRow(obj);
+            continue;
+        
+        }
+
+        if (obj.type === "renderSettings"){
+
+            updateRenderSettings(obj);
+            continue;
+
+        }
     
     }
 
 }
 
-createAllRows(sceneObjects);
+updateAllDatas(sceneObjects);
 
 acceptBtn.addEventListener("click", () => {
 
@@ -135,7 +234,6 @@ function linkNumbersAndSliders(numbers, sliders){
 }
 
 
-let settingsNumbers = [cameraSettingsNumber, diffuseSettingsNumber, specularSettingsNumber, transmissionSettingsNumber, sssSettingsNumber, volumeSettingsNumber]
-let settingsSliders = [cameraSettingsSlider, diffuseSettingsSlider, specularSettingsSlider, transmissionSettingsSlider, sssSettingsSlider, volumeSettingsSlider]
+
 
 linkNumbersAndSliders(settingsNumbers, settingsSliders);
