@@ -16,6 +16,11 @@ html, body{
     user-select: none;
 }
 
+*:focus {
+    outline: none;
+}
+
+
 .mainDiv {
 
     position: absolute;
@@ -24,19 +29,28 @@ html, body{
     padding: 0;
     width: 100%;
     height: 100%;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
     
 }
 
 .tableDiv{
 
+    grid-column: 1;
     grid-row: 1;
 
 }
 
+.renderSettingsDiv{
+
+    grid-column: 2;
+    grid-row: 1;
+}
+
 .acceptDiv{
 
+    grid-column: 1/3;
+    grid-row: 1;
     grid-row: 2;
     display: flex;
     align-items: center;
@@ -127,19 +141,22 @@ button:hover{
     outline: none;
     appearance: none;
     background-color: #262626;
+    text-align: center;
     color: #d9d9d9;
-    font-size: .7rem;
+    font-size: .8rem;
     border-radius: .4em;
     height: 80%;
     font-family: system-ui;
     font-weight: normal;
     width: max-content;
+    padding-bottom: 3px;
     padding-left: 15px;
     padding-right: 15px;
+    
 
 }
 
-input{
+input:not(.inputNb, .slider){
     height: 12px;
     width: 12px;
     appearance: none;
@@ -149,12 +166,84 @@ input{
     border-radius: 10%;
 }
 
-input:checked{
+input:not(.inputNb, .slider):checked{
 
     background-color: #d9d9d9;
 
 }
 
-input:hover{
+input:not(.inputNb, .slider):hover{
     cursor: pointer;
 }
+
+
+
+/* RENDER SETTINGS TABLE */
+
+.renderSettingsTable{
+    width: 100%;
+    background-color: #3a3a3a;
+    border-left: 3px solid #2f2f2f;
+    padding-bottom: 5px;    
+    padding-right: 15px;
+}
+
+
+.renderSettingsTable td{
+
+    padding-top: 5px;
+    padding-left: 15px;
+
+}
+
+.renderSettingsTable td:first-child{
+
+    font-family: system-ui;
+    font-weight: normal;
+    font-size: .9rem;
+
+} 
+
+.inputNb{
+    
+    appearance: none;
+    width: 70px;
+    height: 20px;
+    padding-left: 3px;
+    border-radius: 0.2em;
+    text-align: left;
+    background-color: #1a1a1a;    
+    border: 0;
+    font-family: system-ui;
+    font-weight: normal;
+    font-size: .8rem;
+    color: #d9d9d9;
+
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+}
+
+.slider{
+
+    width: 100px;
+    appearance: none;
+    height: 6px;
+    background-color: #1a1a1a;
+    border-radius: .5em;
+
+}
+
+.slider::-webkit-slider-thumb {
+
+    appearance: none;
+    width: 8px; 
+    height: 16px; 
+    background: #c5c5c5; 
+    cursor: pointer;
+    border-radius: .2em;
+
+  }

@@ -551,7 +551,7 @@ colorAllTablesRowsByStatus(tablesObjList);
 
 
 
-
+popupwindow("popups/passesPropertiesPopup.html", "Properties", 700, 800);
 
 
 

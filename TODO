@@ -2,9 +2,13 @@
 
 - change visibility objects on render
 
+- add render settings to passesPopup (light bounce, resolution, etc)
+
 - refaire le système de save et open
 
 - activer/désactiver la fenetre de rendu
 * l'Attacher à l'UI
 
+
+exemple de command line:
 kick -i path -c "/camera1/cameraShape1"

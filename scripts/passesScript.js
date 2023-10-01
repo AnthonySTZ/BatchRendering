@@ -2,6 +2,20 @@ const objectsTable = document.querySelector(".tableList");
 const acceptBtn = document.querySelector("#acceptBtn");
 const cameraSelect = document.querySelector("#cameraSelect");
 
+const cameraSettingsNumber = document.querySelector("#cameraSettingsNumber");
+const diffuseSettingsNumber = document.querySelector("#diffuseSettingsNumber");
+const specularSettingsNumber = document.querySelector("#specularSettingsNumber");
+const transmissionSettingsNumber = document.querySelector("#transmissionSettingsNumber");
+const sssSettingsNumber = document.querySelector("#sssSettingsNumber");
+const volumeSettingsNumber = document.querySelector("#volumeSettingsNumber");
+
+const cameraSettingsSlider = document.querySelector("#cameraSettingsSlider");
+const diffuseSettingsSlider = document.querySelector("#diffuseSettingsSlider");
+const specularSettingsSlider = document.querySelector("#specularSettingsSlider");
+const transmissionSettingsSlider = document.querySelector("#transmissionSettingsSlider");
+const sssSettingsSlider = document.querySelector("#sssSettingsSlider");
+const volumeSettingsSlider = document.querySelector("#volumeSettingsSlider");
+
 let sceneObjects = JSON.parse(localStorage.getItem("sceneObjects"));
 
 
@@ -97,3 +111,31 @@ acceptBtn.addEventListener("click", () => {
     localStorage.setItem("returnSceneObjects", sceneObjectsText);
 
 });
+
+
+/* RENDER SETTINGS */
+function linkNumbersAndSliders(numbers, sliders){
+
+    for (let i = 0; i<numbers.length; i++){
+
+        numbers[i].addEventListener("change", () => {
+    
+            sliders[i].value = numbers[i].value;
+        
+        });
+    
+        sliders[i].addEventListener("change", () => {
+    
+            numbers[i].value = sliders[i].value;
+        
+        });
+    
+    }
+
+}
+
+
+let settingsNumbers = [cameraSettingsNumber, diffuseSettingsNumber, specularSettingsNumber, transmissionSettingsNumber, sssSettingsNumber, volumeSettingsNumber]
+let settingsSliders = [cameraSettingsSlider, diffuseSettingsSlider, specularSettingsSlider, transmissionSettingsSlider, sssSettingsSlider, volumeSettingsSlider]
+
+linkNumbersAndSliders(settingsNumbers, settingsSliders);
