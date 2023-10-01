@@ -13,6 +13,10 @@ const taskRemoveBtn = document.querySelector("#taskRemoveBtn");
 const slavesAddBtn = document.querySelector("#slavesAddBtn");
 const slavesRemoveBtn = document.querySelector("#slavesRemoveBtn");
 
+//Output File
+const outputFileBtn = document.querySelector("#outputFileBtn");
+const outputFileInput = document.querySelector("#outputFileInput");
+
 //Render Button
 const renderBtn = document.querySelector("#renderBtn");
 const renderAllBtn = document.querySelector("#renderAllBtn");
@@ -551,7 +555,7 @@ colorAllTablesRowsByStatus(tablesObjList);
 
 
 
-popupwindow("popups/passesPropertiesPopup.html", "Properties", 700, 800);
+// popupwindow("popups/passesPropertiesPopup.html", "Properties", 700, 800); // PASSES POPUP
 
 
 
@@ -798,5 +802,23 @@ renderBtn.addEventListener("click", () => {
     renderProcess.stdout.on('data', (data) => {
         console.log(data.toString('utf8'));
     });
+
+});
+
+
+// ------------------- OUTPUT FILE -------------------------- //
+outputFileBtn.addEventListener("click", () => {
+
+    const saveProcess = spawn('python',["scripts/select_folder.py"]);
+    saveProcess.stdout.on('data', (data) => {
+
+        data = data.toString('utf8');
+        console.log(data);
+
+        outputFileInput.value = data;
+
+
+    });
+   
 
 });
