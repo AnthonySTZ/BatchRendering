@@ -19,27 +19,27 @@ const transmissionSamplesSlider = document.querySelector("#transmissionSamplesSl
 const sssSamplesSlider = document.querySelector("#sssSamplesSlider");
 const volumeSamplesSlider = document.querySelector("#volumeSamplesSlider");
 
-const cameraDepthNumber = document.querySelector("#cameraDepthNumber");
+const totalDepthNumber = document.querySelector("#totalDepthNumber");
 const diffuseDepthNumber = document.querySelector("#diffuseDepthNumber");
 const specularDepthNumber = document.querySelector("#specularDepthNumber");
 const transmissionDepthNumber = document.querySelector("#transmissionDepthNumber");
-const sssDepthNumber = document.querySelector("#sssDepthNumber");
 const volumeDepthNumber = document.querySelector("#volumeDepthNumber");
+const transparencyDepthNumber = document.querySelector("#transparencyDepthNumber");
 
-const cameraDepthSlider = document.querySelector("#cameraDepthSlider");
+const totalDepthSlider = document.querySelector("#totalDepthSlider");
 const diffuseDepthSlider = document.querySelector("#diffuseDepthSlider");
 const specularDepthSlider = document.querySelector("#specularDepthSlider");
 const transmissionDepthSlider = document.querySelector("#transmissionDepthSlider");
-const sssDepthSlider = document.querySelector("#sssDepthSlider");
 const volumeDepthSlider = document.querySelector("#volumeDepthSlider");
+const transparencyDepthSlider = document.querySelector("#transparencyDepthSlider");
 
 let sceneObjects = JSON.parse(localStorage.getItem("sceneObjects"));
 
 let samplesNumbers = [cameraSamplesNumber, diffuseSamplesNumber, specularSamplesNumber, transmissionSamplesNumber, sssSamplesNumber, volumeSamplesNumber]
 let samplesSliders = [cameraSamplesSlider, diffuseSamplesSlider, specularSamplesSlider, transmissionSamplesSlider, sssSamplesSlider, volumeSamplesSlider]
 
-let depthNumbers = [cameraDepthNumber, diffuseDepthNumber, specularDepthNumber, transmissionDepthNumber, sssDepthNumber, volumeDepthNumber]
-let depthSliders = [cameraDepthSlider, diffuseDepthSlider, specularDepthSlider, transmissionDepthSlider, sssDepthSlider, volumeDepthSlider]
+let depthNumbers = [totalDepthNumber, diffuseDepthNumber, specularDepthNumber, transmissionDepthNumber, transparencyDepthNumber, volumeDepthNumber]
+let depthSliders = [totalDepthSlider, diffuseDepthSlider, specularDepthSlider, transmissionDepthSlider, transparencyDepthSlider, volumeDepthSlider]
 
 function createRadioButton(obj, visibility){
 
@@ -213,23 +213,23 @@ function updateRenderSamples(obj){
 
 function updateRenderDepth(obj){
 
-    cameraDepthNumber.value = obj.camera;
+    totalDepthNumber.value = obj.total;
     diffuseDepthNumber.value = obj.diffuse;
     specularDepthNumber.value = obj.specular;
     transmissionDepthNumber.value = obj.transmission;
-    sssDepthNumber.value = obj.sss;
     volumeDepthNumber.value = obj.volume;
+    transparencyDepthNumber.value = obj.transparency;
 
-    cameraDepthSlider.value = obj.camera;
+    totalDepthSlider.value = obj.total;
     diffuseDepthSlider.value = obj.diffuse;
     specularDepthSlider.value = obj.specular;
     transmissionDepthSlider.value = obj.transmission;
-    sssDepthSlider.value = obj.sss;
     volumeDepthSlider.value = obj.volume;
+    transparencyDepthSlider.value = obj.transparency;
 
-    cameraDepthNumber.addEventListener("change", () => {
+    totalDepthNumber.addEventListener("change", () => {
 
-        obj.camera = cameraDepthNumber.value;
+        obj.total = totalDepthNumber.value;
 
     });
     diffuseDepthNumber.addEventListener("change", () => {
@@ -247,7 +247,7 @@ function updateRenderDepth(obj){
         obj.transmission = transmissionDepthNumber.value;
 
     });
-    sssDepthNumber.addEventListener("change", () => {
+    transparencyDepthNumber.addEventListener("change", () => {
 
         obj.sss = sssDepthNumber.value;
 
@@ -258,9 +258,9 @@ function updateRenderDepth(obj){
 
     });
 
-    cameraDepthSlider.addEventListener("change", () => {
+    totalDepthSlider.addEventListener("change", () => {
 
-        obj.camera = cameraDepthSlider.value;
+        obj.total = totalDepthSlider.value;
 
     });
     diffuseDepthSlider.addEventListener("change", () => {
@@ -278,9 +278,9 @@ function updateRenderDepth(obj){
         obj.transmission = transmissionDepthSlider.value;
 
     });
-    sssDepthSlider.addEventListener("change", () => {
+    transparencyDepthSlider.addEventListener("change", () => {
 
-        obj.sss = sssDepthSlider.value;
+        obj.transparency = transparencyDepthSlider.value;
 
     });
     volumeDepthSlider.addEventListener("change", () => {

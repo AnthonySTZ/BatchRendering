@@ -17,7 +17,7 @@
                     <th>Show</th>
                     <th>Hidden</th>
                     <th>Matte</th>
-                    <th>Phantom</th>
+                    <th>Holdout</th>
                 </tr>
             </table>
             
@@ -81,34 +81,34 @@
                 <table id="renderDepthTable" class="renderSettingsTable">
                     
                     <tr>
-                        <td>Camera (AA)</td>
-                        <td><input type="number" class="inputNb" min="0" step="1" value="3" id="cameraDepthNumber"></td>
-                        <td><input type="range" min="0" max="8"  value="3" class="slider" id="cameraDepthSlider"></td>
+                        <td>Total</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="10" id="totalDepthNumber"></td>
+                        <td><input type="range" min="0" max="8"  value="3" class="slider" id="totalDepthSlider"></td>
                     </tr>
                     <tr>
                         <td>Diffuse</td>
-                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="diffuseDepthNumber"></td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="1" id="diffuseDepthNumber"></td>
                         <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="diffuseDepthSlider"></td>
                     </tr> 
                     <tr>
                         <td>Specular</td>
-                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="specularDepthNumber"></td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="1" id="specularDepthNumber"></td>
                         <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="specularDepthSlider"></td>
                     </tr>  
                     <tr>
                         <td>Transmission</td>
-                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="transmissionDepthNumber"></td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="8" id="transmissionDepthNumber"></td>
                         <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="transmissionDepthSlider"></td>
                     </tr> 
                     <tr>
-                        <td>SSS</td>
-                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="sssDepthNumber"></td>
-                        <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="sssDepthSlider"></td>
-                    </tr> 
-                    <tr>
                         <td>Volume Indirect</td>
-                        <td><input type="number" class="inputNb" min="0" step="1" value="2" id="volumeDepthNumber"></td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="0" id="volumeDepthNumber"></td>
                         <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="volumeDepthSlider"></td>
+                    </tr>
+                    <tr>
+                        <td>Transparency Depth</td>
+                        <td><input type="number" class="inputNb" min="0" step="1" value="10" id="transparencyDepthNumber"></td>
+                        <td><input type="range" min="0" max="8" value="2" step="1" class="slider" id="transparencyDepthSlider"></td>
                     </tr>
                 </table>
             </div>

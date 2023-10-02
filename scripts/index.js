@@ -470,12 +470,12 @@ function getAllObjects(text){
 
     let renderDepth = {
         type: "renderDepth",
-        camera: 3,
-        diffuse: 2,
-        specular: 2,
-        transmission: 2,
-        sss: 2,
-        volume: 2
+        total: 10,
+        diffuse: 1,
+        specular: 1,
+        transmission: 8,
+        volume: 0,
+        transparency: 10
     };
 
     objects.push(resolution);
