@@ -1,16 +1,12 @@
-- get ray depth and samples in js
-
 - Tester une scene avec des groupes 
 
 - change visibility objects on render
-
-- add render settings to passesPopup (light bounce, resolution, etc)
-
-- refaire le système de save et open
+- change renderSettings on render
 
 - activer/désactiver la fenetre de rendu
 * l'Attacher à l'UI
 
+- refaire le système de save et open
 
 exemple de command line:
 kick -i path -c "/camera1/cameraShape1"

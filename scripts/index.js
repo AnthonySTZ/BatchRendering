@@ -354,6 +354,7 @@ function removeSelectedRow(tableObj){
     if (tableObj.name === "Plans"){
         plansTableObj.sceneObjects.splice(tableObj.rowSelected, 1);
         passesTableObj.passesLists.splice(tableObj.rowSelected, 1);
+        passesTableObj.visibilityLists.splice(tableObj.rowSelected, 1);
         clearTable(passesTableObj);
 
 
@@ -413,11 +414,12 @@ function getAllObjects(text){
 
         polyText = polyText.slice(polyText.indexOf("polymesh") + 18); //cut to Object Name 
 
-        
+        let objPathIndex = polyText.indexOf("\n")
         let objIndex = polyText.indexOf("/");
         let obj = {
                     type : "polymesh",
                     name: polyText.slice(0, objIndex), 
+                    path: polyText.slice(0, objPathIndex), 
                     visibility : 0
                   };
         objects.push(obj);
@@ -450,17 +452,35 @@ function getAllObjects(text){
 
     }
 
-    let renderSettings = {
-        type: "renderSettings",
+    let resolution = {
+        type: "resolution",
+        x: 1920,
+        y: 1080
+    };
+
+    let renderSamples = {
+        type: "renderSamples",
         camera: 3,
         diffuse: 2,
         specular: 2,
         transmission: 2,
         sss: 2,
         volume: 2
-    }
+    };
 
-    objects.push(renderSettings);
+    let renderDepth = {
+        type: "renderDepth",
+        camera: 3,
+        diffuse: 2,
+        specular: 2,
+        transmission: 2,
+        sss: 2,
+        volume: 2
+    };
+
+    objects.push(resolution);
+    objects.push(renderSamples);
+    objects.push(renderDepth);
 
     return objects;
 
@@ -567,7 +587,7 @@ colorAllTablesRowsByStatus(tablesObjList);
 
 
 
-popupwindow("popups/passesPropertiesPopup.html", "Properties", 700, 800); // PASSES POPUP
+// popupwindow("popups/passesPropertiesPopup.html", "Properties", 700, 800); // PASSES POPUP
 
 
 
@@ -682,6 +702,10 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
 
                 if (passesTableObj.visibilityLists.length < plansTableObj.rows.length){
                     passesTableObj.visibilityLists.push([]); //Add empty list for new passes visibility
+                }
+
+                if (plansTableObj.sceneObjects.length < plansTableObj.rows.length){
+                    plansTableObj.sceneObjects.push([]);
                 }
 
 
@@ -808,7 +832,7 @@ renderBtn.addEventListener("click", () => {
 
     let command = JSON.stringify({kick : kickLocation, path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"), settings: sceneSettings});
 
-    // console.log(command);
+    console.log(command);
 
     const renderProcess = spawn('python',["scripts/render.py", command]);
     renderProcess.stdout.on('data', (data) => {
