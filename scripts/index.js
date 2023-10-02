@@ -452,6 +452,7 @@ function getAllObjects(text){
 
     }
 
+
     let resolution = {
         type: "resolution",
         x: 1920,
@@ -829,8 +830,12 @@ renderBtn.addEventListener("click", () => {
     }
 
     let sceneSettings = passesTableObj.visibilityLists[plansTableObj.rowSelected][passesTableObj.rowSelected];
+    let fileOutputPath = outputFileInput.value;
+    let fileOutputName = passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Name");
 
-    let command = JSON.stringify({kick : kickLocation, path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"), settings: sceneSettings});
+    console.log(plansTableObj.rows[plansTableObj.rowSelected].get("Path") + fileOutputName);
+
+    let command = JSON.stringify({kick : kickLocation, path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"), fileOutputPath: fileOutputPath, fileOutputName: fileOutputName, settings: sceneSettings});
 
     // console.log(command);
 

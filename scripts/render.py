@@ -52,17 +52,28 @@ def getResolution(objects):
             resolution = " -r " + str(element["x"]) + " " + str(element["y"])
             return resolution
 
+def getFileOutputFile(path, filePath, name):
+    if len(filePath)>0:
+        return " -o " + filePath + "/" + name + ".exr"
+
+    return " -o " + path[0 : path.rfind("/")+1] + name + ".exr"
+
+
+
 data_in = json.loads(sys.argv[1])
 kick = data_in["kick"].replace("/", "\\")
 path = data_in["path"]
 settings = data_in["settings"]
+fileOutputPath = data_in["fileOutputPath"]
+fileOutputName =  data_in["fileOutputName"]
+fileOutput = getFileOutputFile(path, fileOutputPath, fileOutputName)
 polymeshes = getPolymeshes(settings, path)
 activeCamera = getActiveCamera(settings)
 renderSamples = getRenderSamples(settings)
 resolution = getResolution(settings)
 
 
-command = "kick -i " + path + activeCamera + resolution + polymeshes + renderSamples
+command = "kick -i " + path + fileOutput + activeCamera + resolution + polymeshes + renderSamples
 
 print("Rendering ! " + command)
 
