@@ -832,7 +832,7 @@ renderBtn.addEventListener("click", () => {
 
     let command = JSON.stringify({kick : kickLocation, path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"), settings: sceneSettings});
 
-    console.log(command);
+    // console.log(command);
 
     const renderProcess = spawn('python',["scripts/render.py", command]);
     renderProcess.stdout.on('data', (data) => {
