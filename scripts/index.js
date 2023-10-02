@@ -831,13 +831,21 @@ renderBtn.addEventListener("click", () => {
 
     let sceneSettings = passesTableObj.visibilityLists[plansTableObj.rowSelected][passesTableObj.rowSelected];
     let fileOutputPath = outputFileInput.value;
+    let planName = plansTableObj.rows[plansTableObj.rowSelected].get("Path");
     let fileOutputName = passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Name");
 
     console.log(plansTableObj.rows[plansTableObj.rowSelected].get("Path") + fileOutputName);
 
-    let command = JSON.stringify({kick : kickLocation, path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"), fileOutputPath: fileOutputPath, fileOutputName: fileOutputName, settings: sceneSettings});
+    let command = JSON.stringify({
+            kick : kickLocation,
+            path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"),
+            planName: planName,
+            fileOutputPath: fileOutputPath,
+            fileOutputName: fileOutputName,
+            settings: sceneSettings
+            });
 
-    // console.log(command);
+    console.log(command);
 
     const renderProcess = spawn('python',["scripts/render.py", command]);
     renderProcess.stdout.on('data', (data) => {
