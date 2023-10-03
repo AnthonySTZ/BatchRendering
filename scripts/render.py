@@ -8,13 +8,19 @@ def getPolymeshes(objects, path):
     for element in objects:
         if element["type"] == "polymesh":
             if element["visibility"] == 1: #Hidden
-                polymeshes += " -set /" + element["path"] + ".visibility 0"
+                polymeshes = ""
+                for path in element["path"]:
+                    polymeshes += " -set /" + path + ".visibility 0"
                 continue
             if element["visibility"] == 2: #Matte
-                polymeshes += " -set /" + element["path"] + ".matte true"
+                polymeshes = ""
+                for path in element["path"]:
+                    polymeshes += " -set /" + path + ".matte true"
                 continue
             if element["visibility"] == 3: #Holdout
-                polymeshes += " -set /" + element["path"] + ".visibility 254"
+                polymeshes = ""
+                for path in element["path"]:
+                    polymeshes += " -set /" + path + ".visibility 254"
                 continue
     return polymeshes
 
@@ -53,15 +59,15 @@ def getResolution(objects):
             resolution = " -r " + str(element["x"]) + " " + str(element["y"])
             return resolution
 
-def getFileOutputFile(path, planName, filePath, name):
+def getFileOutputFile(path, planName, filePath, passeName, name):
     if len(filePath)>0: #If custom output path 
-        folderPath = filePath + "/" + planName[:-4]
+        folderPath = filePath + "/" + planName[:-4] + "/" + passeName
         Path(folderPath).mkdir(parents=True, exist_ok=True) #Create folder if not exist
     else :
-        folderPath = path[0 : path.rfind("/")+1] + planName[:-4]
+        folderPath = path[0 : path.rfind("/")+1] + planName[:-4] + "/" + passeName
         Path(folderPath).mkdir(parents=True, exist_ok=True) #Create folder if not exist
 
-    return " -o " + folderPath + "/" + name + ".exr"
+    return " -o " + folderPath +  "/" + name + ".exr"
 
 
 
@@ -76,14 +82,16 @@ planName = data_in["planName"][path.rfind("/")+1 : ]
 
 fileOutputPath = data_in["fileOutputPath"]
 fileOutputName =  data_in["fileOutputName"]
-fileOutput = getFileOutputFile(path, planName, fileOutputPath, fileOutputName)
+fileOutput = getFileOutputFile(path, planName, fileOutputPath, fileOutputName, fileOutputName)
 polymeshes = getPolymeshes(settings, path)
 activeCamera = getActiveCamera(settings)
 renderSamples = getRenderSamples(settings)
+renderDepth = getRenderDepth(settings)
 resolution = getResolution(settings)
 
+fileOutput = ""
 
-command = "kick -i " + path + fileOutput + activeCamera + resolution + polymeshes + renderSamples
+command = "kick -i " + path + fileOutput + activeCamera + resolution + polymeshes + renderSamples + renderDepth
 
 print("Rendering ! " + command)
 

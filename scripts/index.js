@@ -410,6 +410,8 @@ function getAllObjects(text){
 
     let polyText = text;
 
+    let nameObjList = [];
+
     while (polyText.indexOf("polymesh") != -1){
 
         polyText = polyText.slice(polyText.indexOf("polymesh") + 18); //cut to Object Name 
@@ -419,10 +421,23 @@ function getAllObjects(text){
         let obj = {
                     type : "polymesh",
                     name: polyText.slice(0, objIndex), 
-                    path: polyText.slice(0, objPathIndex), 
+                    path: [polyText.slice(0, objPathIndex)], 
                     visibility : 0
                   };
-        objects.push(obj);
+
+        if (!nameObjList.includes(obj.name)){
+
+            nameObjList.push(obj.name);
+            console.log(obj.name);
+            console.log(obj.name);
+            objects.push(obj);
+        } else {
+
+            let index = nameObjList.indexOf(obj.name);
+            objects[index].path.push(polyText.slice(0, objPathIndex));
+
+        }
+
 
     }
 
