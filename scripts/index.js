@@ -364,7 +364,7 @@ function removeSelectedRow(tableObj){
 
         passesTableObj.passesLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
         passesTableObj.visibilityLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
-        
+
     }
 
     clearTable(tableObj);
@@ -474,6 +474,12 @@ function getAllObjects(text){
 
     }
 
+    // let options = {
+    //     type: "options",
+    //     frameStart: 0,
+    //     frameEnd: 5
+    // }
+
 
     let resolution = {
         type: "resolution",
@@ -501,6 +507,7 @@ function getAllObjects(text){
         transparency: 10
     };
 
+    // objects.push(options);
     objects.push(resolution);
     objects.push(renderSamples);
     objects.push(renderDepth);
@@ -813,7 +820,7 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
                     ["Name", name],
                     ["Status", "Pending"],
                     ["Progress", "0% (0/100)"],
-                    ["Frames", "1-100"]
+                    ["Frames", "1-5"]
                 ];
 
                 let newRow = new Map(row);
@@ -843,6 +850,35 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
 
 });
 
+function renderFrame(sceneSettings, fileOutputPath, planName, fileOutputName, frame, frameEnd){
+
+    let command = JSON.stringify({
+        kick : kickLocation,
+        path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"),
+        frame: frame,
+        planName: planName,
+        fileOutputPath: fileOutputPath,
+        fileOutputName: fileOutputName,
+        settings: sceneSettings
+    });
+    
+    // console.log(command);
+    
+    const renderProcess = spawn('python',["scripts/render.py", command]);
+    renderProcess.stdout.pipe(process.stdout);
+
+    renderProcess.on('exit', function() {
+
+            if (frame<frameEnd){
+                renderFrame(sceneSettings, fileOutputPath, planName, fileOutputName, frame+1, frameEnd);
+            }
+
+            console.log("Frame " + frame.toString() + " finished !");
+
+      });
+    
+
+}
 
 renderBtn.addEventListener("click", () => {
 
@@ -858,21 +894,20 @@ renderBtn.addEventListener("click", () => {
 
     console.log(plansTableObj.rows[plansTableObj.rowSelected].get("Path") + fileOutputName);
 
-    let command = JSON.stringify({
-            kick : kickLocation,
-            path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"),
-            planName: planName,
-            fileOutputPath: fileOutputPath,
-            fileOutputName: fileOutputName,
-            settings: sceneSettings
-            });
+    let frames = passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Frames");
+    let frameStart = parseInt(frames.slice(0, frames.indexOf("-")));
+    let frameEnd = parseInt(frames.slice(frames.indexOf("-")+1));
 
-    console.log(command);
+    console.log(frameStart);
+    console.log(frameEnd);
 
-    const renderProcess = spawn('python',["scripts/render.py", command]);
-    renderProcess.stdout.on('data', (data) => {
-        console.log(data.toString('utf8'));
-    });
+    renderFrame(sceneSettings, fileOutputPath, planName, fileOutputName, frameStart, frameEnd);
+
+    // for (let frame=frameStart; frame<=frameEnd; frame++){        
+        
+        
+        
+    // }
 
 });
 
@@ -897,6 +932,15 @@ renderAllBtn.addEventListener("click", () => {
 
         console.log(plansTableObj.rows[plansTableObj.rowSelected].get("Path") + fileOutputName);
         
+        let frames = passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Frames");
+        let frameStart = frames.slice(0, frames.indexOf("-"));
+        let frameEnd = frames.slice(frames.indexOf("-")+1)
+
+        console.log(frameStart);
+        console.log(frameEnd);
+
+        
+
         let command = JSON.stringify({
             kick : kickLocation,
             path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"),
