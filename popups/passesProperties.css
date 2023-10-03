@@ -217,6 +217,18 @@ input:not(.inputNb, .slider):hover{
 }
 
 
+.frameRangeDiv{
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    font-family: system-ui;
+    font-weight: normal;
+    font-size: .8rem;
+    padding-top: 5px;
+    padding-left: 5px;
+}
+
+
 
 /* RENDER SETTINGS TABLE */
 

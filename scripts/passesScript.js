@@ -5,6 +5,9 @@ const cameraSelect = document.querySelector("#cameraSelect");
 const resX = document.querySelector("#resX");
 const resY = document.querySelector("#resY");
 
+const frameStart = document.querySelector("#frameStart");
+const frameEnd = document.querySelector("#frameEnd");
+
 const cameraSamplesNumber = document.querySelector("#cameraSamplesNumber");
 const diffuseSamplesNumber = document.querySelector("#diffuseSamplesNumber");
 const specularSamplesNumber = document.querySelector("#specularSamplesNumber");
@@ -126,6 +129,25 @@ function updateResolution(obj){
     resY.addEventListener("change", () => {
 
         obj.y = resY.value;
+
+    });
+
+}
+
+function updateFrameRange(obj){
+
+    frameStart.value = obj.frameStart;
+    frameEnd.value = obj.frameEnd;
+
+    frameStart.addEventListener("change", () => {
+
+        obj.frameStart = frameStart.value;
+
+    });
+
+    frameEnd.addEventListener("change", () => {
+
+        obj.frameEnd = frameEnd.value;
 
     });
 
@@ -311,6 +333,13 @@ function updateAllDatas(objects){
         if (obj.type === "resolution"){
 
             updateResolution(obj);
+            continue;
+
+        }
+
+        if (obj.type === "options"){
+
+            updateFrameRange(obj);
             continue;
 
         }

@@ -260,6 +260,15 @@ function doubleClickRowListener(tableObj){
                         
                         let returnSceneObjects = JSON.parse(localStorage.getItem("returnSceneObjects"));
                         passesTableObj.visibilityLists[plansTableObj.rowSelected][index-2] = returnSceneObjects;
+
+                        let frameStart = returnSceneObjects[0].frameStart
+                        let frameEnd = returnSceneObjects[0].frameEnd
+                        let frameRange = frameStart.toString() + "-" + frameEnd.toString();
+                        let framePercent = "0%(" + frameRange + ")"; 
+
+                        passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].set("Frames", frameRange);
+                        passesTableObj.table.rows[passesTableObj.rowSelected+2].getElementsByTagName("td")[6].innerText = frameRange;
+                        passesTableObj.table.rows[passesTableObj.rowSelected+2].getElementsByTagName("td")[4].innerText = framePercent;
                         
                         passesWindow.close();
                         
@@ -415,6 +424,14 @@ function getAllObjects(text){
 
     let objects = [];
 
+    let options = {
+        type: "options",
+        frameStart: 1,
+        frameEnd: 5
+    }
+
+    objects.push(options);
+
     let polyText = text;
 
     let nameObjList = [];
@@ -474,11 +491,7 @@ function getAllObjects(text){
 
     }
 
-    // let options = {
-    //     type: "options",
-    //     frameStart: 0,
-    //     frameEnd: 5
-    // }
+    
 
 
     let resolution = {
@@ -507,7 +520,7 @@ function getAllObjects(text){
         transparency: 10
     };
 
-    // objects.push(options);
+    
     objects.push(resolution);
     objects.push(renderSamples);
     objects.push(renderDepth);
@@ -842,6 +855,8 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
 
                     });
 
+
+                
             }
 
         });
@@ -850,7 +865,8 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
 
 });
 
-function renderFrame(sceneSettings, fileOutputPath, planName, fileOutputName, frame, frameEnd){
+
+function renderFrame(rowSelected, sceneSettings, fileOutputPath, planName, fileOutputName, frame, frameEnd){
 
     let command = JSON.stringify({
         kick : kickLocation,
@@ -870,11 +886,21 @@ function renderFrame(sceneSettings, fileOutputPath, planName, fileOutputName, fr
     renderProcess.on('exit', function() {
 
             if (frame<frameEnd){
-                renderFrame(sceneSettings, fileOutputPath, planName, fileOutputName, frame+1, frameEnd);
+                renderFrame(rowSelected, sceneSettings, fileOutputPath, planName, fileOutputName, frame+1, frameEnd);
             }
+
+            let framePercent = parseInt(frame * 100 / frameEnd);
+            passesTableObj.table.rows[rowSelected+2].getElementsByTagName("td")[4].innerText = framePercent.toString() + "%(" + frame.toString() + "-" + frameEnd.toString() + ")";
 
             console.log("Frame " + frame.toString() + " finished !");
 
+            if (frame === frameEnd){
+
+                passesTableObj.rows[rowSelected].set("Status", "Completed");
+                passesTableObj.table.rows[rowSelected+2].getElementsByTagName("td")[2].innerText = "Completed";
+                colorRowsByStatus(passesTableObj);
+
+            }
       });
     
 
@@ -901,15 +927,16 @@ renderBtn.addEventListener("click", () => {
     console.log(frameStart);
     console.log(frameEnd);
 
-    renderFrame(sceneSettings, fileOutputPath, planName, fileOutputName, frameStart, frameEnd);
+    passesTableObj.rows[passesTableObj.rowSelected].set("Status", "Rendering");
+    passesTableObj.table.rows[passesTableObj.rowSelected+2].getElementsByTagName("td")[2].innerText = "Rendering";
+    colorRowsByStatus(passesTableObj);
 
-    // for (let frame=frameStart; frame<=frameEnd; frame++){        
-        
-        
-        
-    // }
+    renderFrame(passesTableObj.rowSelected, sceneSettings, fileOutputPath, planName, fileOutputName, frameStart, frameEnd);
+      
 
 });
+
+
 
 renderAllBtn.addEventListener("click", () => {
 
@@ -932,31 +959,19 @@ renderAllBtn.addEventListener("click", () => {
 
         console.log(plansTableObj.rows[plansTableObj.rowSelected].get("Path") + fileOutputName);
         
-        let frames = passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Frames");
+        let frames = passesTableObj.passesLists[plansTableObj.rowSelected][i].get("Frames");
         let frameStart = frames.slice(0, frames.indexOf("-"));
         let frameEnd = frames.slice(frames.indexOf("-")+1)
 
         console.log(frameStart);
         console.log(frameEnd);
 
-        
+        passesTableObj.rows[i].set("Status", "Rendering");
+        passesTableObj.table.rows[i+2].getElementsByTagName("td")[2].innerText = "Rendering";
+        colorRowsByStatus(passesTableObj);
 
-        let command = JSON.stringify({
-            kick : kickLocation,
-            path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"),
-            planName: planName,
-            fileOutputPath: fileOutputPath,
-            fileOutputName: fileOutputName,
-            settings: sceneSettings
-        });
-        
-        console.log(command);
-        
-        const renderProcess = spawn('python',["scripts/render.py", command]);
-        renderProcess.stdout.on('data', (data) => {
-            console.log(data.toString('utf8'));
-        });
-        
+        renderFrame(i, sceneSettings, fileOutputPath, planName, fileOutputName, frameStart, frameEnd);
+
     }
 
 });

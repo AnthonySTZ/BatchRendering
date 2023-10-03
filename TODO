@@ -2,7 +2,7 @@
 - Materials + hdri /* fonctionne tant que dans maya absolute path
 
 
-
+- renderAll JE PETE MON CRANE , essaye de faire tout en une seule fonction recursive genre un seul renderAll(numberOfRow) puis +1 à chaque fois que le render d'une pass entiere se finit
 
 
 
