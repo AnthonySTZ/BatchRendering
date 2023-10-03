@@ -1,7 +1,23 @@
-- Tester une scene avec des groupes 
+- Tester une scene avec des groupes /* semble bon, peut etre pas pour des groupes dans des groupes
+- Materials + hdri /* fonctionne tant que dans maya absolute path
 
-- Materials + hdri
+
+
+
+
+
+
 - check if preview subd works
+
+- frame update + progression + color
+- task 
+
+
+
+
+
+
+
 
 - activer/désactiver la fenetre de rendu
 * l'Attacher à l'UI

@@ -83,20 +83,24 @@ planName = data_in["planName"][path.rfind("/")+1 : ]
 fileOutputPath = data_in["fileOutputPath"]
 fileOutputName =  data_in["fileOutputName"]
 fileOutput = getFileOutputFile(path, planName, fileOutputPath, fileOutputName, fileOutputName)
+fileFormat = " -of exr"
 polymeshes = getPolymeshes(settings, path)
 activeCamera = getActiveCamera(settings)
 renderSamples = getRenderSamples(settings)
 renderDepth = getRenderDepth(settings)
 resolution = getResolution(settings)
 
-fileOutput = ""
 
-command = "kick -i " + path + fileOutput + activeCamera + resolution + polymeshes + renderSamples + renderDepth
+
+# fileOutput = " "
+
+command = "kick -i " + path + " -dw" + fileOutput + activeCamera + resolution + polymeshes + renderSamples + renderDepth + fileFormat
 
 print("Rendering ! " + command)
 
 subprocess.run(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, shell=True, cwd=kick)
 
+# print("finish")
 
 
 # INT           GI_diffuse_depth                  0

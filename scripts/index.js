@@ -358,6 +358,13 @@ function removeSelectedRow(tableObj){
         clearTable(passesTableObj);
 
 
+    } 
+
+    if (tableObj.name === "Passes"){
+
+        passesTableObj.passesLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
+        passesTableObj.visibilityLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
+        
     }
 
     clearTable(tableObj);
@@ -866,6 +873,47 @@ renderBtn.addEventListener("click", () => {
     renderProcess.stdout.on('data', (data) => {
         console.log(data.toString('utf8'));
     });
+
+});
+
+renderAllBtn.addEventListener("click", () => {
+
+    if (passesTableObj.visibilityLists[plansTableObj.rowSelected].length === 0){ //Check if nothing to render
+        console.log("Nothing to render")
+        return;
+    }
+
+    console.log(passesTableObj.visibilityLists[plansTableObj.rowSelected]);
+
+    for (let i = 0; i < passesTableObj.visibilityLists[plansTableObj.rowSelected].length; i++){
+        
+        console.log(i);       
+
+        let sceneSettings = passesTableObj.visibilityLists[plansTableObj.rowSelected][i];
+        let fileOutputPath = outputFileInput.value;
+        let planName = plansTableObj.rows[plansTableObj.rowSelected].get("Path");
+        let fileOutputName = passesTableObj.passesLists[plansTableObj.rowSelected][i].get("Name");
+
+
+        console.log(plansTableObj.rows[plansTableObj.rowSelected].get("Path") + fileOutputName);
+        
+        let command = JSON.stringify({
+            kick : kickLocation,
+            path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"),
+            planName: planName,
+            fileOutputPath: fileOutputPath,
+            fileOutputName: fileOutputName,
+            settings: sceneSettings
+        });
+        
+        console.log(command);
+        
+        const renderProcess = spawn('python',["scripts/render.py", command]);
+        renderProcess.stdout.on('data', (data) => {
+            console.log(data.toString('utf8'));
+        });
+        
+    }
 
 });
 
