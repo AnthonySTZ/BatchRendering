@@ -248,8 +248,8 @@ function doubleClickRowListener(tableObj){
              
             if (index >= 2){
 
-                let sceneObjects = JSON.stringify(passesTableObj.visibilityLists[plansTableObj.rowSelected][index-2]);
-                console.log(passesTableObj.visibilityLists[plansTableObj.rowSelected][index-2]);
+                let sceneObjects = JSON.stringify(passesTableObj.sceneSettingsLists[plansTableObj.rowSelected][index-2]);
+                console.log(passesTableObj.sceneSettingsLists[plansTableObj.rowSelected][index-2]);
                 localStorage.setItem("sceneObjects", sceneObjects);
                 let passesWindow = popupwindow("popups/passesPropertiesPopup.html", "Properties", 700, 800);
                 
@@ -259,7 +259,7 @@ function doubleClickRowListener(tableObj){
                     passesWindow.document.querySelector("#acceptBtn").addEventListener("click", () => {
                         
                         let returnSceneObjects = JSON.parse(localStorage.getItem("returnSceneObjects"));
-                        passesTableObj.visibilityLists[plansTableObj.rowSelected][index-2] = returnSceneObjects;
+                        passesTableObj.sceneSettingsLists[plansTableObj.rowSelected][index-2] = returnSceneObjects;
 
                         let frameStart = returnSceneObjects[0].frameStart
                         let frameEnd = returnSceneObjects[0].frameEnd
@@ -363,7 +363,7 @@ function removeSelectedRow(tableObj){
     if (tableObj.name === "Plans"){
         plansTableObj.sceneObjects.splice(tableObj.rowSelected, 1);
         passesTableObj.passesLists.splice(tableObj.rowSelected, 1);
-        passesTableObj.visibilityLists.splice(tableObj.rowSelected, 1);
+        passesTableObj.sceneSettingsLists.splice(tableObj.rowSelected, 1);
         clearTable(passesTableObj);
 
 
@@ -372,7 +372,7 @@ function removeSelectedRow(tableObj){
     if (tableObj.name === "Passes"){
 
         passesTableObj.passesLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
-        passesTableObj.visibilityLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
+        passesTableObj.sceneSettingsLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
 
     }
 
@@ -556,7 +556,7 @@ let passesTableObj = {
     name : "Passes",
     table : passesTable,
     passesLists : [],
-    visibilityLists : [],
+    sceneSettingsLists : [],
     rows : [],
     rowSelected : undefined
 };
@@ -743,8 +743,8 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
                     passesTableObj.passesLists.push([]); //Add empty list for new passes
                 }
 
-                if (passesTableObj.visibilityLists.length < plansTableObj.rows.length){
-                    passesTableObj.visibilityLists.push([]); //Add empty list for new passes visibility
+                if (passesTableObj.sceneSettingsLists.length < plansTableObj.rows.length){
+                    passesTableObj.sceneSettingsLists.push([]); //Add empty list for new passes visibility
                 }
 
                 if (plansTableObj.sceneObjects.length < plansTableObj.rows.length){
@@ -850,7 +850,7 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
                     .then((text) => {
 
                         let sceneObjects = getAllObjects(text);
-                        passesTableObj.visibilityLists[plansTableObj.rowSelected].push(sceneObjects);
+                        passesTableObj.sceneSettingsLists[plansTableObj.rowSelected].push(sceneObjects);
 
 
                     });
@@ -866,13 +866,13 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
 });
 
 
-function renderFrame(rowSelected, sceneSettings, fileOutputPath, planName, fileOutputName, frame, frameEnd){
+function renderFrame(rowSelected, maxRows, sceneSettings, fileOutputPath, planRowSelected, fileOutputName, frame, frameEnd){
 
     let command = JSON.stringify({
         kick : kickLocation,
-        path: plansTableObj.rows[plansTableObj.rowSelected].get("Path"),
+        path: plansTableObj.rows[planRowSelected].get("Path"),
         frame: frame,
-        planName: planName,
+        planName: plansTableObj.rows[planRowSelected].get("Path"),
         fileOutputPath: fileOutputPath,
         fileOutputName: fileOutputName,
         settings: sceneSettings
@@ -886,7 +886,10 @@ function renderFrame(rowSelected, sceneSettings, fileOutputPath, planName, fileO
     renderProcess.on('exit', function() {
 
             if (frame<frameEnd){
-                renderFrame(rowSelected, sceneSettings, fileOutputPath, planName, fileOutputName, frame+1, frameEnd);
+
+                
+
+                renderFrame(rowSelected, maxRows, sceneSettings, fileOutputPath, planRowSelected, fileOutputName, frame+1, frameEnd);
             }
 
             let framePercent = parseInt(frame * 100 / frameEnd);
@@ -900,9 +903,50 @@ function renderFrame(rowSelected, sceneSettings, fileOutputPath, planName, fileO
                 passesTableObj.table.rows[rowSelected+2].getElementsByTagName("td")[2].innerText = "Completed";
                 colorRowsByStatus(passesTableObj);
 
+                if (rowSelected < maxRows){
+
+                    let sceneSettings = passesTableObj.sceneSettingsLists[planRowSelected][rowSelected+1];
+                    let fileOutputPath = outputFileInput.value;
+                    let fileOutputName = passesTableObj.passesLists[planRowSelected][rowSelected+1].get("Name");
+
+                    let next_frames = passesTableObj.passesLists[planRowSelected][rowSelected+1].get("Frames");
+                    let next_frameStart = parseInt(next_frames.slice(0, next_frames.indexOf("-")));
+                    let next_frameEnd = parseInt(next_frames.slice(next_frames.indexOf("-")+1));
+
+                    passesTableObj.rows[rowSelected+1].set("Status", "Rendering");
+                    passesTableObj.table.rows[rowSelected+3].getElementsByTagName("td")[2].innerText = "Rendering";
+                    colorRowsByStatus(passesTableObj);
+
+                    renderFrame(rowSelected+1, maxRows, sceneSettings, fileOutputPath, planRowSelected, fileOutputName, next_frameStart, next_frameEnd);
+
+                }
+
             }
       });
     
+
+}
+
+function renderAll(mawRows, startRow, planRowSelected){
+
+    let sceneSettings = passesTableObj.sceneSettingsLists[planRowSelected][startRow];
+    let fileOutputPath = outputFileInput.value;
+    let fileOutputName = passesTableObj.passesLists[planRowSelected][startRow].get("Name");
+
+    console.log(plansTableObj.rows[planRowSelected].get("Path") + fileOutputName);
+
+    let frames = passesTableObj.passesLists[planRowSelected][startRow].get("Frames");
+    let frameStart = parseInt(frames.slice(0, frames.indexOf("-")));
+    let frameEnd = parseInt(frames.slice(frames.indexOf("-")+1));
+
+    console.log(frameStart);
+    console.log(frameEnd);
+
+    passesTableObj.rows[startRow].set("Status", "Rendering");
+    passesTableObj.table.rows[startRow+2].getElementsByTagName("td")[2].innerText = "Rendering";
+    colorRowsByStatus(passesTableObj);
+
+    renderFrame(startRow, mawRows, sceneSettings, fileOutputPath, planRowSelected, fileOutputName, frameStart, frameEnd);
 
 }
 
@@ -913,25 +957,7 @@ renderBtn.addEventListener("click", () => {
         return;
     }
 
-    let sceneSettings = passesTableObj.visibilityLists[plansTableObj.rowSelected][passesTableObj.rowSelected];
-    let fileOutputPath = outputFileInput.value;
-    let planName = plansTableObj.rows[plansTableObj.rowSelected].get("Path");
-    let fileOutputName = passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Name");
-
-    console.log(plansTableObj.rows[plansTableObj.rowSelected].get("Path") + fileOutputName);
-
-    let frames = passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Frames");
-    let frameStart = parseInt(frames.slice(0, frames.indexOf("-")));
-    let frameEnd = parseInt(frames.slice(frames.indexOf("-")+1));
-
-    console.log(frameStart);
-    console.log(frameEnd);
-
-    passesTableObj.rows[passesTableObj.rowSelected].set("Status", "Rendering");
-    passesTableObj.table.rows[passesTableObj.rowSelected+2].getElementsByTagName("td")[2].innerText = "Rendering";
-    colorRowsByStatus(passesTableObj);
-
-    renderFrame(passesTableObj.rowSelected, sceneSettings, fileOutputPath, planName, fileOutputName, frameStart, frameEnd);
+    renderAll(0, passesTableObj.rowSelected, plansTableObj.rowSelected);
       
 
 });
@@ -940,39 +966,12 @@ renderBtn.addEventListener("click", () => {
 
 renderAllBtn.addEventListener("click", () => {
 
-    if (passesTableObj.visibilityLists[plansTableObj.rowSelected].length === 0){ //Check if nothing to render
+    if (passesTableObj.sceneSettingsLists[plansTableObj.rowSelected].length === 0){ //Check if nothing to render
         console.log("Nothing to render")
         return;
     }
 
-    console.log(passesTableObj.visibilityLists[plansTableObj.rowSelected]);
-
-    for (let i = 0; i < passesTableObj.visibilityLists[plansTableObj.rowSelected].length; i++){
-        
-        console.log(i);       
-
-        let sceneSettings = passesTableObj.visibilityLists[plansTableObj.rowSelected][i];
-        let fileOutputPath = outputFileInput.value;
-        let planName = plansTableObj.rows[plansTableObj.rowSelected].get("Path");
-        let fileOutputName = passesTableObj.passesLists[plansTableObj.rowSelected][i].get("Name");
-
-
-        console.log(plansTableObj.rows[plansTableObj.rowSelected].get("Path") + fileOutputName);
-        
-        let frames = passesTableObj.passesLists[plansTableObj.rowSelected][i].get("Frames");
-        let frameStart = frames.slice(0, frames.indexOf("-"));
-        let frameEnd = frames.slice(frames.indexOf("-")+1)
-
-        console.log(frameStart);
-        console.log(frameEnd);
-
-        passesTableObj.rows[i].set("Status", "Rendering");
-        passesTableObj.table.rows[i+2].getElementsByTagName("td")[2].innerText = "Rendering";
-        colorRowsByStatus(passesTableObj);
-
-        renderFrame(i, sceneSettings, fileOutputPath, planName, fileOutputName, frameStart, frameEnd);
-
-    }
+    renderAll(passesTableObj.sceneSettingsLists[plansTableObj.rowSelected].length-1, 0, plansTableObj.rowSelected);
 
 });
 
