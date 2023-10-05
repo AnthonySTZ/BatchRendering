@@ -30,6 +30,9 @@ const slavesTable = document.querySelector("#slavesTable");
 //Kick location
 const kickLocation = "C:/Program Files/Autodesk/Arnold/maya2023/bin"
 
+let rendersQueue = [];
+let isRendering = false;
+
 // ----------- CREATE TABLES ----------- //
 function addRow(rowObj){
 
@@ -869,97 +872,86 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
 
 });
 
+function setPassesStatus(rowSelected, status){
 
-function renderFrame(rowSelected, maxRows, sceneSettings, fileOutputPath, planRowSelected, fileOutputName, frame, frameEnd){
+    passesTableObj.rows[rowSelected].set("Status", status);
+    passesTableObj.table.rows[rowSelected+2].getElementsByTagName("td")[2].innerText = status;
+    colorRowsByStatus(passesTableObj);
+
+}
+
+function renderCurrent(planSelected, passesSelected, currentFrame, endFrame){
+
+    let sceneSettings = passesTableObj.sceneSettingsLists[planSelected][passesSelected];
+    let fileOutputPath = outputFileInput.value;
+    let fileOutputName = passesTableObj.passesLists[planSelected][passesSelected].get("Name");
 
     let command = JSON.stringify({
         kick : kickLocation,
-        path: plansTableObj.rows[planRowSelected].get("Path"),
-        frame: frame,
-        planName: plansTableObj.rows[planRowSelected].get("Path"),
+        path: plansTableObj.rows[planSelected].get("Path"),
+        frame: currentFrame,
+        planName: plansTableObj.rows[planSelected].get("Path"),
         fileOutputPath: fileOutputPath,
         fileOutputName: fileOutputName,
         settings: sceneSettings
     });
-    
-    // console.log(command);
-    
+
     const renderProcess = spawn('python',["scripts/render.py", command]);
     renderProcess.stdout.pipe(process.stdout);
 
     renderProcess.on('exit', function() {
 
-            if (frame<frameEnd){
-                renderFrame(rowSelected, maxRows, sceneSettings, fileOutputPath, planRowSelected, fileOutputName, frame+1, frameEnd);
-            }
+        let percentFrame = parseInt(currentFrame * 100 / endFrame);
+        passesTableObj.table.rows[passesSelected+2].getElementsByTagName("td")[4].innerText = percentFrame.toString() + "%(" + currentFrame.toString() + "-" + endFrame.toString() + ")";
 
-            let framePercent = parseInt(frame * 100 / frameEnd);
-            passesTableObj.table.rows[rowSelected+2].getElementsByTagName("td")[4].innerText = framePercent.toString() + "%(" + frame.toString() + "-" + frameEnd.toString() + ")";
+        if(currentFrame<endFrame){ 
+            renderCurrent(planSelected, passesSelected, currentFrame+1, endFrame);
+            return;
+        }
 
-            console.log("Frame " + frame.toString() + " finished !");
+        // If passes Finished
+        setPassesStatus(passesSelected, "Completed");
 
-            if (frame === frameEnd){
+        rendersQueue.shift();
+        initCurrentRender();
 
-                passesTableObj.rows[rowSelected].set("Status", "Completed");
-                passesTableObj.table.rows[rowSelected+2].getElementsByTagName("td")[2].innerText = "Completed";
-                colorRowsByStatus(passesTableObj);
+    });
 
-                if (rowSelected < maxRows){
 
-                    let sceneSettings = passesTableObj.sceneSettingsLists[planRowSelected][rowSelected+1];
-                    let fileOutputPath = outputFileInput.value;
-                    let fileOutputName = passesTableObj.passesLists[planRowSelected][rowSelected+1].get("Name");
+}
 
-                    let next_frames = passesTableObj.passesLists[planRowSelected][rowSelected+1].get("Frames");
-                    let next_frameStart = parseInt(next_frames.slice(0, next_frames.indexOf("-")));
-                    let next_frameEnd = parseInt(next_frames.slice(next_frames.indexOf("-")+1));
 
-                    passesTableObj.rows[rowSelected+1].set("Status", "Rendering");
-                    passesTableObj.table.rows[rowSelected+3].getElementsByTagName("td")[2].innerText = "Rendering";
-                    colorRowsByStatus(passesTableObj);
+function initCurrentRender(){
 
-                    renderFrame(rowSelected+1, maxRows, sceneSettings, fileOutputPath, planRowSelected, fileOutputName, next_frameStart, next_frameEnd);
+    if (rendersQueue.length === 0){
+        console.log("nothing to render");
+        isRendering = false;
+        return;
+    }
 
-                } else {
+    // example of renderObj
+    // {
+    //     planSelected: 0,
+    //     passesSelected: 0
+    // }
 
-                    renderAllBtn.disabled = false;
-                    renderBtn.disabled = false;
+    let planSelected = rendersQueue[0].planSelected;
+    let passesSelected = rendersQueue[0].passesSelected;
 
-                    console.log("All Renders Finished")
+    let frames = passesTableObj.passesLists[planSelected][passesSelected].get("Frames");
+    let startFrame = parseInt(frames.slice(0, frames.indexOf("-")));
+    let endFrame = parseInt(frames.slice(frames.indexOf("-")+1));
 
-                }
+    setPassesStatus(passesSelected, "Rendering");
 
-            }
-      });
+    isRendering = true;
+
+    renderCurrent(planSelected, passesSelected, startFrame, endFrame);
+
+
     
-
 }
 
-function renderAll(mawRows, startRow, planRowSelected){
-
-    let sceneSettings = passesTableObj.sceneSettingsLists[planRowSelected][startRow];
-    let fileOutputPath = outputFileInput.value;
-    let fileOutputName = passesTableObj.passesLists[planRowSelected][startRow].get("Name");
-
-    console.log(plansTableObj.rows[planRowSelected].get("Path") + fileOutputName);
-
-    let frames = passesTableObj.passesLists[planRowSelected][startRow].get("Frames");
-    let frameStart = parseInt(frames.slice(0, frames.indexOf("-")));
-    let frameEnd = parseInt(frames.slice(frames.indexOf("-")+1));
-
-    console.log(frameStart);
-    console.log(frameEnd);
-
-    passesTableObj.rows[startRow].set("Status", "Rendering");
-    passesTableObj.table.rows[startRow+2].getElementsByTagName("td")[2].innerText = "Rendering";
-    colorRowsByStatus(passesTableObj);
-
-    renderAllBtn.disabled = true;
-    renderBtn.disabled = true;
-
-    renderFrame(startRow, mawRows, sceneSettings, fileOutputPath, planRowSelected, fileOutputName, frameStart, frameEnd);
-
-}
 
 renderBtn.addEventListener("click", () => {
 
@@ -968,8 +960,20 @@ renderBtn.addEventListener("click", () => {
         return;
     }
 
-    renderAll(0, passesTableObj.rowSelected, plansTableObj.rowSelected);
-      
+    // renderAll(0, passesTableObj.rowSelected, plansTableObj.rowSelected);
+    let renderObj = {
+
+        planSelected: plansTableObj.rowSelected,
+        passesSelected: passesTableObj.rowSelected
+
+    };
+
+    setPassesStatus(passesTableObj.rowSelected, "Queued");
+
+    rendersQueue.push(renderObj);
+    if (!isRendering){
+        initCurrentRender();
+    }
 
 });
 
@@ -982,17 +986,23 @@ renderAllBtn.addEventListener("click", () => {
         return;
     }
 
-    for (let i = 0; i<passesTableObj.sceneSettingsLists[plansTableObj.rowSelected].length; i++){
+    for (let i=0; i<passesTableObj.passesLists[plansTableObj.rowSelected].length; i++){
 
-        passesTableObj.rows[i].set("Status", "Queued");
-        passesTableObj.table.rows[i+2].getElementsByTagName("td")[2].innerText = "Queued";
-        colorRowsByStatus(passesTableObj);
+        let renderObj = {
+
+            planSelected: plansTableObj.rowSelected,
+            passesSelected: i
+    
+        };
+
+        setPassesStatus(i, "Queued");
+        rendersQueue.push(renderObj);
 
     }
 
-    
-
-    renderAll(passesTableObj.sceneSettingsLists[plansTableObj.rowSelected].length-1, 0, plansTableObj.rowSelected);
+    if (!isRendering){
+        initCurrentRender();
+    }
 
 });
 
