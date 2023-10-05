@@ -2,12 +2,12 @@
 - Materials + hdri /* fonctionne tant que dans maya absolute path
 
 
-- renderAll JE PETE MON CRANE , essaye de faire tout en une seule fonction recursive genre un seul renderAll(numberOfRow) puis +1 à chaque fois que le render d'une pass entiere se finit
+
+- essayer de créer une liste des rendus en cours puis a chaque fois qu'on rajoute un render il check si un rendu est deja en cours et des qu'un rendu est fin il check si il reste des trucs a render et il render
 
 
 
-- frame update + progression + color
-- task 
+- tasks G PEUR
 
 
 

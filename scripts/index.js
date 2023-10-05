@@ -101,7 +101,11 @@ function colorRowsByStatus(tableObj){
         status = tableObj.rows[i].get("Status");
         nodes = tableObj.table.rows[i+2].childNodes;
         
-        if (status === "Queued" || status === "Pending"){
+        if (status === "Queued"){
+
+            colorAllRowTexts(nodes, "#DFDF33"); //Yellow
+
+        }else if (status === "Pending"){
             
             colorAllRowTexts(nodes, "#939393"); //Grey
             
@@ -832,7 +836,7 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
                 let row = [
                     ["Name", name],
                     ["Status", "Pending"],
-                    ["Progress", "0% (0/100)"],
+                    ["Progress", "0% (0/5)"],
                     ["Frames", "1-5"]
                 ];
 
@@ -886,9 +890,6 @@ function renderFrame(rowSelected, maxRows, sceneSettings, fileOutputPath, planRo
     renderProcess.on('exit', function() {
 
             if (frame<frameEnd){
-
-                
-
                 renderFrame(rowSelected, maxRows, sceneSettings, fileOutputPath, planRowSelected, fileOutputName, frame+1, frameEnd);
             }
 
@@ -919,6 +920,13 @@ function renderFrame(rowSelected, maxRows, sceneSettings, fileOutputPath, planRo
 
                     renderFrame(rowSelected+1, maxRows, sceneSettings, fileOutputPath, planRowSelected, fileOutputName, next_frameStart, next_frameEnd);
 
+                } else {
+
+                    renderAllBtn.disabled = false;
+                    renderBtn.disabled = false;
+
+                    console.log("All Renders Finished")
+
                 }
 
             }
@@ -946,6 +954,9 @@ function renderAll(mawRows, startRow, planRowSelected){
     passesTableObj.table.rows[startRow+2].getElementsByTagName("td")[2].innerText = "Rendering";
     colorRowsByStatus(passesTableObj);
 
+    renderAllBtn.disabled = true;
+    renderBtn.disabled = true;
+
     renderFrame(startRow, mawRows, sceneSettings, fileOutputPath, planRowSelected, fileOutputName, frameStart, frameEnd);
 
 }
@@ -970,6 +981,16 @@ renderAllBtn.addEventListener("click", () => {
         console.log("Nothing to render")
         return;
     }
+
+    for (let i = 0; i<passesTableObj.sceneSettingsLists[plansTableObj.rowSelected].length; i++){
+
+        passesTableObj.rows[i].set("Status", "Queued");
+        passesTableObj.table.rows[i+2].getElementsByTagName("td")[2].innerText = "Queued";
+        colorRowsByStatus(passesTableObj);
+
+    }
+
+    
 
     renderAll(passesTableObj.sceneSettingsLists[plansTableObj.rowSelected].length-1, 0, plansTableObj.rowSelected);
 
