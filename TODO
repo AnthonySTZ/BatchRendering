@@ -3,12 +3,11 @@
 
 
 
-- essayer de créer une liste des rendus en cours puis a chaque fois qu'on rajoute un render il check si un rendu est deja en cours et des qu'un rendu est fin il check si il reste des trucs a render et il render
 
 
 
-- tasks G PEUR
-
+- tasks G PEUR 
+- render in exr : write exr driver in ass file
 
 
 

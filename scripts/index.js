@@ -330,7 +330,7 @@ function selectRowListener(tableObj){
                     clearTable(passesTableObj); //Show passes for selected shot
                     passesTableObj.rows = passesTableObj.passesLists[index - 2];
                     addAllRows(passesTableObj);
-
+                    colorRowsByStatus(passesTableObj);
 
                 } else if (tableObj.name === "Slaves"){
                     console.log(tableObj.rows[index-2].get("Machine"));
@@ -872,15 +872,31 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
 
 });
 
-function setPassesStatus(rowSelected, status){
+function setPassesStatus(plansRowSelected, passesRowSelected, status){
 
-    passesTableObj.rows[rowSelected].set("Status", status);
-    passesTableObj.table.rows[rowSelected+2].getElementsByTagName("td")[2].innerText = status;
+    passesTableObj.passesLists[plansRowSelected][passesRowSelected].set("Status", status);
+    clearTable(passesTableObj);
+    addAllRows(passesTableObj);
+
     colorRowsByStatus(passesTableObj);
 
 }
 
-function renderCurrent(planSelected, passesSelected, currentFrame, endFrame){
+function setPassesProgress(plansRowSelected, passesRowSelected, currentFrame, endFrame, nbFrames){
+
+    let currentFrameNb = currentFrame - (endFrame - nbFrames);
+    let percentFrame = currentFrameNb * 100 / nbFrames;
+    let progressText = percentFrame.toString() + "%(" + currentFrameNb.toString() + "-" + nbFrames.toString() + ")";
+
+
+    passesTableObj.passesLists[plansRowSelected][passesRowSelected].set("Progress", progressText);
+    clearTable(passesTableObj);
+    addAllRows(passesTableObj);
+    colorRowsByStatus(passesTableObj);
+
+}
+
+function renderCurrent(planSelected, passesSelected, currentFrame, endFrame, nbFrames){
 
     let sceneSettings = passesTableObj.sceneSettingsLists[planSelected][passesSelected];
     let fileOutputPath = outputFileInput.value;
@@ -901,16 +917,15 @@ function renderCurrent(planSelected, passesSelected, currentFrame, endFrame){
 
     renderProcess.on('exit', function() {
 
-        let percentFrame = parseInt(currentFrame * 100 / endFrame);
-        passesTableObj.table.rows[passesSelected+2].getElementsByTagName("td")[4].innerText = percentFrame.toString() + "%(" + currentFrame.toString() + "-" + endFrame.toString() + ")";
+        setPassesProgress(planSelected, passesSelected, currentFrame, endFrame, nbFrames);
 
         if(currentFrame<endFrame){ 
-            renderCurrent(planSelected, passesSelected, currentFrame+1, endFrame);
+            renderCurrent(planSelected, passesSelected, currentFrame+1, endFrame, nbFrames);
             return;
         }
 
         // If passes Finished
-        setPassesStatus(passesSelected, "Completed");
+        setPassesStatus(planSelected, passesSelected, "Completed");
 
         rendersQueue.shift();
         initCurrentRender();
@@ -941,12 +956,15 @@ function initCurrentRender(){
     let frames = passesTableObj.passesLists[planSelected][passesSelected].get("Frames");
     let startFrame = parseInt(frames.slice(0, frames.indexOf("-")));
     let endFrame = parseInt(frames.slice(frames.indexOf("-")+1));
+    let nbFrames = endFrame - startFrame + 1;
 
-    setPassesStatus(passesSelected, "Rendering");
+    setPassesStatus(planSelected, passesSelected, "Rendering");
+    passesTableObj.table.rows[passesSelected+2].getElementsByTagName("td")[4].innerText = "0%(0-" + nbFrames.toString() + ")";
+
 
     isRendering = true;
 
-    renderCurrent(planSelected, passesSelected, startFrame, endFrame);
+    renderCurrent(planSelected, passesSelected, startFrame, endFrame, nbFrames);
 
 
     
@@ -968,7 +986,7 @@ renderBtn.addEventListener("click", () => {
 
     };
 
-    setPassesStatus(passesTableObj.rowSelected, "Queued");
+    setPassesStatus(plansTableObj.rowSelected, passesTableObj.rowSelected, "Queued");
 
     rendersQueue.push(renderObj);
     if (!isRendering){
@@ -995,7 +1013,7 @@ renderAllBtn.addEventListener("click", () => {
     
         };
 
-        setPassesStatus(i, "Queued");
+        setPassesStatus(plansTableObj.rowSelected, i, "Queued");
         rendersQueue.push(renderObj);
 
     }
