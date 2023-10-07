@@ -364,6 +364,51 @@ function removeSelectedRow(tableObj){
         return;
     }
 
+    if (tableObj.name === "Passes"){
+
+        if(passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Status") === "Rendering"){
+
+            passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].set("Status", "Suspended");
+            rendersQueue[0].status = "Suspended";
+
+            clearTable(tableObj);
+            addAllRows(tableObj);
+            colorRowsByStatus(tableObj);
+            return;
+
+        }
+
+        if(passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Status") === "Queued"){
+
+            for(let i = 0; i<rendersQueue.length; i++){
+
+                if (rendersQueue[i].passesSelected === passesTableObj.rowSelected){
+
+                    if (rendersQueue[i].planSelected === plansTableObj.rowSelected){
+
+                        passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].set("Status", "Suspended");
+                        rendersQueue.splice(i, 1);
+                        clearTable(tableObj);
+                        addAllRows(tableObj);
+                        colorRowsByStatus(tableObj);
+                        return;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        if (passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Status") === "Pending"){
+            passesTableObj.passesLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
+            passesTableObj.sceneSettingsLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
+        }
+
+
+    }
+
     console.log("Row Selected: " + tableObj.rowSelected.toString());
     tableObj.rows.splice(tableObj.rowSelected, 1);
 
@@ -375,13 +420,6 @@ function removeSelectedRow(tableObj){
 
 
     } 
-
-    if (tableObj.name === "Passes"){
-
-        passesTableObj.passesLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
-        passesTableObj.sceneSettingsLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
-
-    }
 
     clearTable(tableObj);
     addAllRows(tableObj);
@@ -538,7 +576,156 @@ function getAllObjects(text){
 
 
 
+// RENDER //
+function setTasksList(){
 
+    taskTableObj.rows = []; //Reset Tasks
+
+    let name;
+    let framesText;
+    let status;
+    for (let render of rendersQueue){
+
+
+        let currentFrame = render.currentFrame;
+        let endFrame = render.endFrame;
+        let nbFrames = render.nbFrames;
+        let currentFrameNb = currentFrame - (endFrame - nbFrames) - 1;
+        let percentFrame = currentFrameNb * 100 / nbFrames;
+        framesText = percentFrame.toString() + "%(" + currentFrameNb.toString() + "-" + nbFrames.toString() + ")";
+
+
+
+        name = passesTableObj.passesLists[render.planSelected][render.passesSelected].get("Name");
+        status = render.status;
+
+        let taskRow = [
+            ["Name", name],
+            ["Frames", framesText],
+            ["Status", status]
+        ];
+
+        let taskMap = new Map(taskRow);
+        taskTableObj.rows.push(taskMap);
+
+    } 
+
+    clearTable(taskTableObj);
+    addAllRows(taskTableObj);
+    colorRowsByStatus(taskTableObj);
+
+}
+
+function setPassesStatus(plansRowSelected, passesRowSelected, status){
+
+    passesTableObj.passesLists[plansRowSelected][passesRowSelected].set("Status", status);
+    clearTable(passesTableObj);
+    addAllRows(passesTableObj);
+
+    colorRowsByStatus(passesTableObj);
+
+}
+
+function setPassesProgress(plansRowSelected, passesRowSelected, currentFrame, endFrame, nbFrames){
+
+    let currentFrameNb = currentFrame - (endFrame - nbFrames);
+    let percentFrame = currentFrameNb * 100 / nbFrames;
+    let progressText = percentFrame.toString() + "%(" + currentFrameNb.toString() + "-" + nbFrames.toString() + ")";
+
+
+    passesTableObj.passesLists[plansRowSelected][passesRowSelected].set("Progress", progressText);
+    clearTable(passesTableObj);
+    addAllRows(passesTableObj);
+    colorRowsByStatus(passesTableObj);
+
+}
+
+function renderCurrent(planSelected, passesSelected, currentFrame, endFrame, nbFrames){
+
+    if(rendersQueue[0].status === "Suspended"){
+        rendersQueue.shift();
+        initCurrentRender();
+        return;
+    }
+
+    let sceneSettings = passesTableObj.sceneSettingsLists[planSelected][passesSelected];
+    let fileOutputPath = outputFileInput.value;
+    let fileOutputName = passesTableObj.passesLists[planSelected][passesSelected].get("Name");
+
+    let command = JSON.stringify({
+        kick : kickLocation,
+        path: plansTableObj.rows[planSelected].get("Path"),
+        frame: currentFrame,
+        planName: plansTableObj.rows[planSelected].get("Path"),
+        fileOutputPath: fileOutputPath,
+        fileOutputName: fileOutputName,
+        settings: sceneSettings
+    });
+
+    const renderProcess = spawn('python',["scripts/render.py", command]);
+    renderProcess.stdout.pipe(process.stdout);
+
+    renderProcess.on('exit', function() {
+
+        rendersQueue[0].currentFrame += 1;
+        setPassesProgress(planSelected, passesSelected, currentFrame, endFrame, nbFrames);        
+        setTasksList();
+
+
+        if(currentFrame<endFrame){ 
+            renderCurrent(planSelected, passesSelected, currentFrame+1, endFrame, nbFrames);
+            return;
+        }
+
+        // If passes Finished
+        setPassesStatus(planSelected, passesSelected, "Completed");
+
+        rendersQueue.shift();
+        initCurrentRender();
+
+    });
+
+
+}
+
+
+function initCurrentRender(){
+
+    if (rendersQueue.length === 0){
+        console.log("nothing to render");
+        isRendering = false;
+        setTasksList();
+        return;
+    }
+
+    // example of renderObj
+    // {
+    //     planSelected: 0,
+    //     passesSelected: 0
+    // }
+
+    let planSelected = rendersQueue[0].planSelected;
+    let passesSelected = rendersQueue[0].passesSelected;
+
+    let startFrame = rendersQueue[0].startFrame;
+    let endFrame = rendersQueue[0].endFrame;
+    let nbFrames = rendersQueue[0].nbFrames;
+
+    setPassesStatus(planSelected, passesSelected, "Rendering");
+    setPassesProgress(planSelected, passesSelected, startFrame-1, endFrame, nbFrames)
+
+
+    isRendering = true;
+
+
+    rendersQueue[0].status = "Rendering";
+    setTasksList();
+
+    renderCurrent(planSelected, passesSelected, startFrame, endFrame, nbFrames);
+
+
+    
+}
 
 
 
@@ -576,29 +763,7 @@ let tasksRow1Values = [
     ["Status", "Queued"]
 ];
 
-let tasksRow2Values = [
-    ["Name", "adipa"],
-    ["Frames", "1-100"],
-    ["Status", "Completed"]
-];
-
-let tasksRow3Values = [
-    ["Name", "Mashala"],
-    ["Frames", "1-100"],
-    ["Status", "Suspended"]
-];
-
-let tasksRow4Values = [
-    ["Name", "Grof"],
-    ["Frames", "1-100"],
-    ["Status", "Queued"]
-];
-
 let tasksRow1Obj = new Map(tasksRow1Values);
-let tasksRow2Obj = new Map(tasksRow2Values);
-let tasksRow3Obj = new Map(tasksRow3Values);
-let tasksRow4Obj = new Map(tasksRow4Values);
-
 
 let taskTableObj = {
     name : "Task",
@@ -872,148 +1037,7 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
 
 });
 
-function setTasksList(){
 
-    taskTableObj.rows = []; //Reset Tasks
-
-    let name;
-    let framesText;
-    let status;
-    for (let render of rendersQueue){
-
-
-        let currentFrame = render.currentFrame;
-        let endFrame = render.endFrame;
-        let nbFrames = render.nbFrames;
-        let currentFrameNb = currentFrame - (endFrame - nbFrames) - 1;
-        let percentFrame = currentFrameNb * 100 / nbFrames;
-        framesText = percentFrame.toString() + "%(" + currentFrameNb.toString() + "-" + nbFrames.toString() + ")";
-
-
-
-        name = passesTableObj.passesLists[render.planSelected][render.passesSelected].get("Name");
-        status = render.status;
-
-        let taskRow = [
-            ["Name", name],
-            ["Frames", framesText],
-            ["Status", status]
-        ];
-
-        let taskMap = new Map(taskRow);
-        taskTableObj.rows.push(taskMap);
-
-    } 
-
-    clearTable(taskTableObj);
-    addAllRows(taskTableObj);
-    colorRowsByStatus(taskTableObj);
-
-}
-
-function setPassesStatus(plansRowSelected, passesRowSelected, status){
-
-    passesTableObj.passesLists[plansRowSelected][passesRowSelected].set("Status", status);
-    clearTable(passesTableObj);
-    addAllRows(passesTableObj);
-
-    colorRowsByStatus(passesTableObj);
-
-}
-
-function setPassesProgress(plansRowSelected, passesRowSelected, currentFrame, endFrame, nbFrames){
-
-    let currentFrameNb = currentFrame - (endFrame - nbFrames);
-    let percentFrame = currentFrameNb * 100 / nbFrames;
-    let progressText = percentFrame.toString() + "%(" + currentFrameNb.toString() + "-" + nbFrames.toString() + ")";
-
-
-    passesTableObj.passesLists[plansRowSelected][passesRowSelected].set("Progress", progressText);
-    clearTable(passesTableObj);
-    addAllRows(passesTableObj);
-    colorRowsByStatus(passesTableObj);
-
-}
-
-function renderCurrent(planSelected, passesSelected, currentFrame, endFrame, nbFrames){
-
-    let sceneSettings = passesTableObj.sceneSettingsLists[planSelected][passesSelected];
-    let fileOutputPath = outputFileInput.value;
-    let fileOutputName = passesTableObj.passesLists[planSelected][passesSelected].get("Name");
-
-    let command = JSON.stringify({
-        kick : kickLocation,
-        path: plansTableObj.rows[planSelected].get("Path"),
-        frame: currentFrame,
-        planName: plansTableObj.rows[planSelected].get("Path"),
-        fileOutputPath: fileOutputPath,
-        fileOutputName: fileOutputName,
-        settings: sceneSettings
-    });
-
-    const renderProcess = spawn('python',["scripts/render.py", command]);
-    renderProcess.stdout.pipe(process.stdout);
-
-    renderProcess.on('exit', function() {
-
-        rendersQueue[0].currentFrame += 1;
-        setPassesProgress(planSelected, passesSelected, currentFrame, endFrame, nbFrames);        
-        setTasksList();
-
-
-        if(currentFrame<endFrame){ 
-            renderCurrent(planSelected, passesSelected, currentFrame+1, endFrame, nbFrames);
-            return;
-        }
-
-        // If passes Finished
-        setPassesStatus(planSelected, passesSelected, "Completed");
-
-        rendersQueue.shift();
-        initCurrentRender();
-
-    });
-
-
-}
-
-
-function initCurrentRender(){
-
-    if (rendersQueue.length === 0){
-        console.log("nothing to render");
-        isRendering = false;
-        return;
-    }
-
-    // example of renderObj
-    // {
-    //     planSelected: 0,
-    //     passesSelected: 0
-    // }
-
-    let planSelected = rendersQueue[0].planSelected;
-    let passesSelected = rendersQueue[0].passesSelected;
-
-    let startFrame = rendersQueue[0].startFrame;
-    let endFrame = rendersQueue[0].endFrame;
-    let nbFrames = rendersQueue[0].nbFrames;
-
-    setPassesStatus(planSelected, passesSelected, "Rendering");
-    setPassesProgress(planSelected, passesSelected, startFrame-1, endFrame, nbFrames)
-
-
-    isRendering = true;
-
-
-    rendersQueue[0].status = "Rendering";
-    setTasksList();
-
-    renderCurrent(planSelected, passesSelected, startFrame, endFrame, nbFrames);
-
-
-    
-}
 
 
 renderBtn.addEventListener("click", () => {
@@ -1022,8 +1046,6 @@ renderBtn.addEventListener("click", () => {
         console.log("Nothing Selected")
         return;
     }
-
-    // renderAll(0, passesTableObj.rowSelected, plansTableObj.rowSelected);
     
 
     setPassesStatus(plansTableObj.rowSelected, passesTableObj.rowSelected, "Queued");
