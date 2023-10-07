@@ -603,7 +603,7 @@ let tasksRow4Obj = new Map(tasksRow4Values);
 let taskTableObj = {
     name : "Task",
     table : taskTable,
-    rows : [tasksRow1Obj, tasksRow2Obj, tasksRow3Obj, tasksRow4Obj],
+    rows : [],
     rowSelected : undefined
 };
 
@@ -872,6 +872,45 @@ passesAddBtn.addEventListener("click", () => { //Add Slave machine
 
 });
 
+function setTasksList(){
+
+    taskTableObj.rows = []; //Reset Tasks
+
+    let name;
+    let framesText;
+    let status;
+    for (let render of rendersQueue){
+
+
+        let currentFrame = render.currentFrame;
+        let endFrame = render.endFrame;
+        let nbFrames = render.nbFrames;
+        let currentFrameNb = currentFrame - (endFrame - nbFrames) - 1;
+        let percentFrame = currentFrameNb * 100 / nbFrames;
+        framesText = percentFrame.toString() + "%(" + currentFrameNb.toString() + "-" + nbFrames.toString() + ")";
+
+
+
+        name = passesTableObj.passesLists[render.planSelected][render.passesSelected].get("Name");
+        status = render.status;
+
+        let taskRow = [
+            ["Name", name],
+            ["Frames", framesText],
+            ["Status", status]
+        ];
+
+        let taskMap = new Map(taskRow);
+        taskTableObj.rows.push(taskMap);
+
+    } 
+
+    clearTable(taskTableObj);
+    addAllRows(taskTableObj);
+    colorRowsByStatus(taskTableObj);
+
+}
+
 function setPassesStatus(plansRowSelected, passesRowSelected, status){
 
     passesTableObj.passesLists[plansRowSelected][passesRowSelected].set("Status", status);
@@ -917,7 +956,10 @@ function renderCurrent(planSelected, passesSelected, currentFrame, endFrame, nbF
 
     renderProcess.on('exit', function() {
 
-        setPassesProgress(planSelected, passesSelected, currentFrame, endFrame, nbFrames);
+        rendersQueue[0].currentFrame += 1;
+        setPassesProgress(planSelected, passesSelected, currentFrame, endFrame, nbFrames);        
+        setTasksList();
+
 
         if(currentFrame<endFrame){ 
             renderCurrent(planSelected, passesSelected, currentFrame+1, endFrame, nbFrames);
@@ -953,16 +995,19 @@ function initCurrentRender(){
     let planSelected = rendersQueue[0].planSelected;
     let passesSelected = rendersQueue[0].passesSelected;
 
-    let frames = passesTableObj.passesLists[planSelected][passesSelected].get("Frames");
-    let startFrame = parseInt(frames.slice(0, frames.indexOf("-")));
-    let endFrame = parseInt(frames.slice(frames.indexOf("-")+1));
-    let nbFrames = endFrame - startFrame + 1;
+    let startFrame = rendersQueue[0].startFrame;
+    let endFrame = rendersQueue[0].endFrame;
+    let nbFrames = rendersQueue[0].nbFrames;
 
     setPassesStatus(planSelected, passesSelected, "Rendering");
-    passesTableObj.table.rows[passesSelected+2].getElementsByTagName("td")[4].innerText = "0%(0-" + nbFrames.toString() + ")";
+    setPassesProgress(planSelected, passesSelected, startFrame-1, endFrame, nbFrames)
 
 
     isRendering = true;
+
+
+    rendersQueue[0].status = "Rendering";
+    setTasksList();
 
     renderCurrent(planSelected, passesSelected, startFrame, endFrame, nbFrames);
 
@@ -979,16 +1024,31 @@ renderBtn.addEventListener("click", () => {
     }
 
     // renderAll(0, passesTableObj.rowSelected, plansTableObj.rowSelected);
-    let renderObj = {
-
-        planSelected: plansTableObj.rowSelected,
-        passesSelected: passesTableObj.rowSelected
-
-    };
+    
 
     setPassesStatus(plansTableObj.rowSelected, passesTableObj.rowSelected, "Queued");
 
+    let frames = passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Frames");
+    let startFrame = parseInt(frames.slice(0, frames.indexOf("-")));
+    let endFrame = parseInt(frames.slice(frames.indexOf("-")+1));
+    let nbFrames = endFrame - startFrame + 1;
+
+    let renderObj = {
+
+        planSelected: plansTableObj.rowSelected,
+        passesSelected: passesTableObj.rowSelected,
+        currentFrame: startFrame,
+        startFrame: startFrame,
+        endFrame: endFrame,
+        nbFrames: nbFrames,
+        status: "Queued"
+
+    };
+
     rendersQueue.push(renderObj);
+
+    setTasksList();
+
     if (!isRendering){
         initCurrentRender();
     }
@@ -1006,17 +1066,29 @@ renderAllBtn.addEventListener("click", () => {
 
     for (let i=0; i<passesTableObj.passesLists[plansTableObj.rowSelected].length; i++){
 
+        let frames = passesTableObj.passesLists[plansTableObj.rowSelected][i].get("Frames");
+        let startFrame = parseInt(frames.slice(0, frames.indexOf("-")));
+        let endFrame = parseInt(frames.slice(frames.indexOf("-")+1));
+        let nbFrames = endFrame - startFrame + 1;
+
         let renderObj = {
 
             planSelected: plansTableObj.rowSelected,
-            passesSelected: i
-    
+            passesSelected: i,
+            currentFrame: startFrame,
+            startFrame: startFrame,
+            endFrame: endFrame,
+            nbFrames: nbFrames,
+            status: "Queued"
+
         };
 
         setPassesStatus(plansTableObj.rowSelected, i, "Queued");
         rendersQueue.push(renderObj);
 
     }
+
+    setTasksList();
 
     if (!isRendering){
         initCurrentRender();
