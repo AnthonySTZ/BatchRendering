@@ -1,6 +1,7 @@
 import sys
 import subprocess
 import json
+import os
 from pathlib import Path
 
 def getFrameRange(objects):
@@ -89,26 +90,35 @@ planName = data_in["planName"][path.rfind("/")+1 : ]
 
 # frameStart, frameEnd = getFrameRange(settings)
 frame = data_in["frame"]
-fileOutputPath = data_in["fileOutputPath"]
-fileOutputName =  data_in["fileOutputName"]
-fileOutput = getFileOutputFile(path, planName, fileOutputPath, fileOutputName, fileOutputName)
-fileFormat = ' -of exr'
-polymeshes = getPolymeshes(settings)
-activeCamera = getActiveCamera(settings)
-renderSamples = getRenderSamples(settings)
-renderDepth = getRenderDepth(settings)
-resolution = getResolution(settings)
+
+if path[-8:-4].isnumeric():
+    if path[-9] == ".":
+        path =  path[:-8] + str(frame).zfill(4) + ".ass"
+
+if os.path.exists(path):
+
+    fileOutputPath = data_in["fileOutputPath"]
+    fileOutputName =  data_in["fileOutputName"]
+    fileOutput = getFileOutputFile(path, planName, fileOutputPath, fileOutputName, fileOutputName)
+    fileFormat = ' -of "exr"'
+    polymeshes = getPolymeshes(settings)
+    activeCamera = getActiveCamera(settings)
+    renderSamples = getRenderSamples(settings)
+    renderDepth = getRenderDepth(settings)
+    resolution = getResolution(settings)
 
 
 
-# fileOutput = " "
+    # fileOutput = " "
 
-fileOutputFrame = fileOutput.replace("####", str(frame).zfill(4))
-frameRange = " -set options.frame " + str(frame)
-command = "kick -i " + path + " -dw" + fileOutputFrame + activeCamera + resolution + polymeshes + renderSamples + renderDepth + fileFormat + frameRange
-subprocess.run(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, shell=True, cwd=kick)
+    fileOutputFrame = fileOutput.replace("####", str(frame).zfill(4))
+    frameRange = " -set options.frame " + str(frame)
+    command = "kick -i " + path + " -dw" + fileOutputFrame + activeCamera + resolution + polymeshes + renderSamples + renderDepth + fileFormat + frameRange
+    subprocess.run(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, shell=True, cwd=kick)
+    print("finish")
+else:
+    print("no file exists")
 
-print("finish")
 
 
 # INT           GI_diffuse_depth                  0

@@ -1,23 +1,9 @@
-- Tester une scene avec des groupes /* semble bon, peut etre pas pour des groupes dans des groupes
-- Materials + hdri /* fonctionne tant que dans maya absolute path
-
-
-
-
-
 
 - render in exr : write exr driver in ass file
 
-
-
-
-
-
-
-- activer/désactiver la fenetre de rendu
-* l'Attacher à l'UI
-
 - refaire le système de save et open
+
+
 
 exemple de command line:
 kick -i path -c "/camera1/cameraShape1"

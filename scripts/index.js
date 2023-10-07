@@ -374,6 +374,7 @@ function removeSelectedRow(tableObj){
             clearTable(tableObj);
             addAllRows(tableObj);
             colorRowsByStatus(tableObj);
+            setTasksList();
             return;
 
         }
@@ -391,6 +392,7 @@ function removeSelectedRow(tableObj){
                         clearTable(tableObj);
                         addAllRows(tableObj);
                         colorRowsByStatus(tableObj);
+                        setTasksList();
                         return;
 
                     }
@@ -580,7 +582,7 @@ function getAllObjects(text){
 function setTasksList(){
 
     taskTableObj.rows = []; //Reset Tasks
-
+ 
     let name;
     let framesText;
     let status;
@@ -591,7 +593,7 @@ function setTasksList(){
         let endFrame = render.endFrame;
         let nbFrames = render.nbFrames;
         let currentFrameNb = currentFrame - (endFrame - nbFrames) - 1;
-        let percentFrame = currentFrameNb * 100 / nbFrames;
+        let percentFrame = parseInt(currentFrameNb * 100 / nbFrames);
         framesText = percentFrame.toString() + "%(" + currentFrameNb.toString() + "-" + nbFrames.toString() + ")";
 
 
@@ -629,7 +631,7 @@ function setPassesStatus(plansRowSelected, passesRowSelected, status){
 function setPassesProgress(plansRowSelected, passesRowSelected, currentFrame, endFrame, nbFrames){
 
     let currentFrameNb = currentFrame - (endFrame - nbFrames);
-    let percentFrame = currentFrameNb * 100 / nbFrames;
+    let percentFrame = parseInt(currentFrameNb * 100 / nbFrames);
     let progressText = percentFrame.toString() + "%(" + currentFrameNb.toString() + "-" + nbFrames.toString() + ")";
 
 
