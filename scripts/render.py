@@ -17,19 +17,16 @@ def getPolymeshes(objects):
     for element in objects:
         if element["type"] == "polymesh":
             if element["visibility"] == 1: #Hidden
-                polymeshes = ""
-                for path in element["path"]:
-                    polymeshes += " -set /" + path + ".visibility 0"
+                for obj_path in element["path"]:
+                    polymeshes += " -set /" + obj_path + ".visibility 0"
                 continue
             if element["visibility"] == 2: #Matte
-                polymeshes = ""
-                for path in element["path"]:
-                    polymeshes += " -set /" + path + ".matte true"
+                for obj_path in element["path"]:
+                    polymeshes += " -set /" + obj_path + ".matte true"
                 continue
             if element["visibility"] == 3: #Holdout
-                polymeshes = ""
-                for path in element["path"]:
-                    polymeshes += " -set /" + path + ".visibility 254"
+                for obj_path in element["path"]:
+                    polymeshes += " -set /" + obj_path + ".visibility 254"
                 continue
     return polymeshes
 

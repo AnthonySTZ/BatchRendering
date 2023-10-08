@@ -1,9 +1,11 @@
-
-- render in exr : write exr driver in ass file
+- vérifier les obj du test_maya_group
 
 - refaire le système de save et open
 
 
+
+
+- slaves plus tard
 
 exemple de command line:
 kick -i path -c "/camera1/cameraShape1"

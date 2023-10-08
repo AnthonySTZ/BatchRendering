@@ -1,3 +1,5 @@
+const { stringify } = require("querystring");
+
 // Save Box Buttons variables
 const openNewBtn = document.querySelector("#openNewBtn");
 const saveBtn = document.querySelector("#saveBtn");
@@ -205,6 +207,75 @@ function createTablesData(tablesObjList){ //Create Datas to save
 
 }
 
+function createSaveData(){
+
+    let data = [];
+
+    let plansDataList = [];
+
+    for (let row of plansTableObj.rows){ // PLAN rows data 
+
+        plansDataList.push(Array.from(row.entries()));
+
+    }
+    
+
+    data.push(plansDataList);
+
+    // ^^ Ca a l'air bon en haut ^^
+
+    let passesData = []; //[Settings, Names]
+
+    let sceneSettingsDataList = [];
+
+    for (let i=0; i<passesTableObj.sceneSettingsLists.length; i++){ // Passes sceneSettingsLists data
+
+        sceneSettingsDataList.push([]);
+
+        for (let j=0; j<passesTableObj.sceneSettingsLists[i].length; j++){
+
+            sceneSettingsDataList[i].push([]);
+
+            for (let settings of passesTableObj.sceneSettingsLists[i][j]){
+
+                sceneSettingsDataList[i][j].push(Array.from(Object.entries(settings).entries()));
+
+            }
+
+        }
+
+    }
+
+    passesData.push(sceneSettingsDataList);
+    
+    let passesNameDataList = [];
+
+    for (let i=0; i<passesTableObj.passesLists.length; i++){ // Passes Name data
+
+        passesNameDataList.push([]);
+
+        for (let j=0; j<passesTableObj.passesLists[i].length; j++){
+
+            passesNameDataList[i].push(passesTableObj.passesLists[i][j].get("Name"));
+           
+
+        }
+
+    }
+
+    passesData.push(passesNameDataList);
+    
+    data.push(passesData);
+
+    
+    let dataStringify = JSON.stringify(data);
+    console.log(data)
+    console.log(dataStringify);
+
+    return dataStringify;
+
+}
+
 function getDataFromSave(saveText){
 
     const allLists = saveText.split("|");
@@ -403,7 +474,7 @@ function removeSelectedRow(tableObj){
 
         }
 
-        if (passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Status") === "Pending"){
+        if (passesTableObj.passesLists[plansTableObj.rowSelected][passesTableObj.rowSelected].get("Status") === "Pending" && !isRendering){
             passesTableObj.passesLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
             passesTableObj.sceneSettingsLists[plansTableObj.rowSelected].splice(tableObj.rowSelected, 1);
         }
@@ -411,11 +482,18 @@ function removeSelectedRow(tableObj){
 
     }
 
+    if(isRendering){
+
+        console.log("Wait for all renders to finish before removing rows");
+        return;
+
+    }
+
     console.log("Row Selected: " + tableObj.rowSelected.toString());
     tableObj.rows.splice(tableObj.rowSelected, 1);
 
     if (tableObj.name === "Plans"){
-        plansTableObj.sceneObjects.splice(tableObj.rowSelected, 1);
+        // plansTableObj.sceneObjects.splice(tableObj.rowSelected, 1);
         passesTableObj.passesLists.splice(tableObj.rowSelected, 1);
         passesTableObj.sceneSettingsLists.splice(tableObj.rowSelected, 1);
         clearTable(passesTableObj);
@@ -702,8 +780,13 @@ function initCurrentRender(){
 
     // example of renderObj
     // {
-    //     planSelected: 0,
-    //     passesSelected: 0
+    //     planSelected: plansTableObj.rowSelected,
+    //     passesSelected: passesTableObj.rowSelected,
+    //     currentFrame: startFrame,
+    //     startFrame: startFrame,
+    //     endFrame: endFrame,
+    //     nbFrames: nbFrames,
+    //     status: "Queued"
     // }
 
     let planSelected = rendersQueue[0].planSelected;
@@ -743,7 +826,6 @@ let plansTableObj = {
     name : "Plans",
     table : plansTable,
     rows : [],
-    sceneObjects : [],
     rowSelected : undefined
 };
 
@@ -788,7 +870,7 @@ let slavesRow1Obj = new Map(slavesRow1Values);
 let slavesTableObj = {
     name : "Slaves",
     table : slavesTable,
-    rows : [slavesRow1Obj],
+    rows : [],
     rowSelected : undefined
 };
 
@@ -824,11 +906,13 @@ openNewBtn.addEventListener("click", () => { //Open New Button Popup
 
 saveBtn.addEventListener("click", () => { //Save Button
 
-    const data_to_pass = createTablesData(tablesObjList);
-    const saveProcess = spawn('python',["scripts/save.py", data_to_pass]);
-    saveProcess.stdout.on('data', (data) => {
-        console.log(data.toString('utf8'));
-    });
+    // const data_to_pass = createTablesData(tablesObjList);
+    let dataToPass = createSaveData();
+
+    // const saveProcess = spawn('python',["scripts/save.py", data_to_pass]);
+    // saveProcess.stdout.on('data', (data) => {
+    //     console.log(data.toString('utf8'));
+    // });
    
     
 });
@@ -921,9 +1005,9 @@ plansAddBtn.addEventListener("click", () => { //Add plans row Button
                     passesTableObj.sceneSettingsLists.push([]); //Add empty list for new passes visibility
                 }
 
-                if (plansTableObj.sceneObjects.length < plansTableObj.rows.length){
-                    plansTableObj.sceneObjects.push([]);
-                }
+                // if (plansTableObj.sceneObjects.length < plansTableObj.rows.length){
+                //     plansTableObj.sceneObjects.push([]);
+                // }
 
 
 
