@@ -179,6 +179,13 @@ function clearAllTablesRows(tablesObjList){
 
         tableObj.rows = [];
 
+        if (tableObj.name === "Passes"){
+
+            tableObj.passesLists = [];
+            tableObj.sceneSettingsLists = [];
+
+        }
+
     }
 
 
@@ -275,6 +282,172 @@ function createSaveData(){
     return dataStringify;
 
 }
+
+
+
+function getSavedData(data){
+
+    let parseData = JSON.parse(data);
+    let plansData = parseData[0];    
+
+    for (let plans of plansData){
+
+        let plansRowObj = new Map(plans);
+        plansTableObj.rows.push(plansRowObj);
+
+    }
+
+    addAllRows(plansTableObj);
+
+    let passesData = parseData[1];
+    let passesSceneData = passesData[0];
+    let passesNameData = passesData[1];
+    let passesSceneSettings = [];
+
+    for(let i=0; i<passesSceneData.length; i++){ //passesSceneData[i] = chaque plans
+
+        passesSceneSettings.push([]);
+
+        for (let j=0; j<passesSceneData[i].length; j++){
+
+            passesSceneSettings[i].push([]);
+
+            for (let settings of passesSceneData[i][j]){
+                
+
+                if (settings[0][1][1] === "options"){ // checkType
+
+                    let options = {
+                        type: "options",
+                        frameStart: settings[1][1][1],
+                        frameEnd: settings[2][1][1]
+                    }
+
+                    passesSceneSettings[i][j].push(options);
+
+                    continue;
+
+                }
+
+                if (settings[0][1][1] === "polymesh"){
+
+                    let obj = {
+                        type : "polymesh",
+                        name: settings[1][1][1], 
+                        path: settings[2][1][1],
+                        visibility : settings[3][1][1]
+                      };
+
+                    passesSceneSettings[i][j].push(obj);
+
+                    continue;
+
+                }
+
+                if (settings[0][1][1] === "camera"){
+
+                    let camera = {
+                        type : "camera",
+                        name: settings[1][1][1], 
+                        selected : settings[2][1][1]
+                      };
+
+                      
+                    passesSceneSettings[i][j].push(camera);
+
+                    continue;
+
+                }
+
+                if (settings[0][1][1] === "resolution"){
+
+                    let resolution = {
+                        type: "resolution",
+                        x: settings[1][1][1],
+                        y: settings[2][1][1]
+                    };
+
+                    passesSceneSettings[i][j].push(resolution);
+
+                    continue;
+
+                }
+
+                if (settings[0][1][1] === "renderSamples"){
+
+                    let renderSamples = {
+                        type: "renderSamples",
+                        camera: settings[1][1][1],
+                        diffuse: settings[2][1][1],
+                        specular: settings[3][1][1],
+                        transmission: settings[4][1][1],
+                        sss: settings[5][1][1],
+                        volume: settings[6][1][1]
+                    };
+
+                    passesSceneSettings[i][j].push(renderSamples);
+
+                    continue;
+
+                }
+            
+                if (settings[0][1][1] === "renderDepth"){
+
+                    let renderDepth = {
+                        type: "renderDepth",
+                        total: settings[1][1][1],
+                        diffuse: settings[2][1][1],
+                        specular: settings[3][1][1],
+                        transmission: settings[4][1][1],
+                        volume: settings[5][1][1],
+                        transparency: settings[6][1][1]
+                    };
+
+                    passesSceneSettings[i][j].push(renderDepth);
+
+                    continue;
+
+                }            
+
+            }            
+
+        }
+
+    }
+
+    passesTableObj.sceneSettingsLists = passesSceneSettings;
+
+    console.log(passesNameData);
+
+    let passesLists = [];
+
+    for(let i=0; i<passesNameData.length; i++){
+
+        passesLists.push([]);
+
+        for(let name of passesNameData[i]){
+
+            let row = [
+                    ["Name", name],
+                    ["Status", "Pending"],
+                    ["Progress", "0% (0/5)"],
+                    ["Frames", "1-5"]
+            ];
+
+            
+            let rowObj = new Map(row);
+            passesLists[i].push(rowObj);
+
+        }
+
+    }
+
+    passesTableObj.passesLists = passesLists;
+
+}
+
+
+
 
 function getDataFromSave(saveText){
 
@@ -909,10 +1082,10 @@ saveBtn.addEventListener("click", () => { //Save Button
     // const data_to_pass = createTablesData(tablesObjList);
     let dataToPass = createSaveData();
 
-    // const saveProcess = spawn('python',["scripts/save.py", data_to_pass]);
-    // saveProcess.stdout.on('data', (data) => {
-    //     console.log(data.toString('utf8'));
-    // });
+    const saveProcess = spawn('python',["scripts/save.py", dataToPass]);
+    saveProcess.stdout.on('data', (data) => {
+        console.log(data.toString('utf8'));
+    });
    
     
 });
@@ -921,13 +1094,15 @@ openBtn.addEventListener("click", () => { //Open Button
 
     const openProcess = spawn('python',["scripts/open.py"]);
     openProcess.stdout.on('data', (data) => {
-        let datas = getDataFromSave(data.toString('utf8'));
+        // let datas = getDataFromSave(data.toString('utf8'));
 
-        loadData(tablesObjList, datas),
-        clearAllTables(tablesObjList);
-        createAllTablesRows(tablesObjList);
+        // loadData(tablesObjList, datas),
+        // clearAllTables(tablesObjList);
+        // createAllTablesRows(tablesObjList);
 
-        colorAllTablesRowsByStatus(tablesObjList);
+        // colorAllTablesRowsByStatus(tablesObjList);
+
+        getSavedData(data.toString('utf8'));
 
     });
     
