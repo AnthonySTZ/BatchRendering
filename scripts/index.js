@@ -192,28 +192,6 @@ function clearAllTablesRows(tablesObjList){
 }
 
 // ----------- SAVE AND OPEN ----------- //
-function createTablesData(tablesObjList){ //Create Datas to save
-
-    let datas = "";
-
-    for (let tableObj of tablesObjList){
-
-        for(let row of tableObj.rows){
-
-            datas += JSON.stringify(Array.from(row.entries())) + "*";
-
-        }
-
-        datas = datas.slice(0, -1);
-
-        datas += "|";
-
-    }
-    
-    return datas.slice(0, -1); //remove last "*|"
-
-}
-
 function createSaveData(){
 
     let data = [];
@@ -304,15 +282,19 @@ function getSavedData(data){
     let passesNameData = passesData[1];
     let passesSceneSettings = [];
 
+    let frameRangeList = [];
+
     for(let i=0; i<passesSceneData.length; i++){ //passesSceneData[i] = chaque plans
 
         passesSceneSettings.push([]);
+        frameRangeList.push([]);
 
-        for (let j=0; j<passesSceneData[i].length; j++){
+        for (let j=0; j<passesSceneData[i].length; j++){ //Passes row
 
             passesSceneSettings[i].push([]);
+            frameRangeList[i].push([]);
 
-            for (let settings of passesSceneData[i][j]){
+            for (let settings of passesSceneData[i][j]){ //chaque settings d'une scene
                 
 
                 if (settings[0][1][1] === "options"){ // checkType
@@ -322,6 +304,9 @@ function getSavedData(data){
                         frameStart: settings[1][1][1],
                         frameEnd: settings[2][1][1]
                     }
+
+                    frameRangeList[i][j].push(settings[1][1][1]);
+                    frameRangeList[i][j].push(settings[2][1][1]);
 
                     passesSceneSettings[i][j].push(options);
 
@@ -421,17 +406,21 @@ function getSavedData(data){
 
     let passesLists = [];
 
-    for(let i=0; i<passesNameData.length; i++){
+    for(let i=0; i<passesNameData.length; i++){ //plans row
 
         passesLists.push([]);
 
-        for(let name of passesNameData[i]){
+        for(let j=0; j<passesNameData[i].length; j++){ //passes row
+
+            let name = passesNameData[i][j];
+            let progress = "0% (0/" + (frameRangeList[i][j][1]-frameRangeList[i][j][0] + 1).toString() + ")"
+            let frames = frameRangeList[i][j][0].toString() + "-" + frameRangeList[i][j][1].toString();
 
             let row = [
                     ["Name", name],
                     ["Status", "Pending"],
-                    ["Progress", "0% (0/5)"],
-                    ["Frames", "1-5"]
+                    ["Progress", progress],
+                    ["Frames", frames]
             ];
 
             
@@ -447,43 +436,6 @@ function getSavedData(data){
 }
 
 
-
-
-function getDataFromSave(saveText){
-
-    const allLists = saveText.split("|");
-    let AllDatas = [];
-
-    for (let list of allLists){
-        
-        let row = list.split("*");
-        let mapList = [];
-
-        for (let element of row){
-
-            let map = new Map(JSON.parse(element));
-            mapList.push(map);
-
-        }
-
-        AllDatas.push(mapList);
-
-    }
-    
-
-    return AllDatas;
-
-}
-
-function loadData(tableObjList, data){
-
-    for(let i = 0; i < tableObjList.length; i++){
-
-        tableObjList[i].rows = data[i];
-
-    }
-
-}
 
 // ------------- ROW SELECTION ------------ //
 function doubleClickRowListener(tableObj){
