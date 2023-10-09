@@ -708,12 +708,14 @@ function getAllObjects(text){
         } else {
 
             let index = nameObjList.indexOf(obj.name);
-            objects[index].path.push(polyText.slice(0, objPathIndex));
+            objects[index+1].path.push(obj.path[0]);
 
         }
 
 
     }
+
+    console.log(objects);
 
     let cameraText = text;
 
