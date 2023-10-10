@@ -78,7 +78,8 @@ def getFileOutputFile(path, planName, filePath, passeName, name):
 
 
 data_in = json.loads(sys.argv[1])
-kick = data_in["kick"].replace("/", "\\")
+kickfile = open("resources/python_scripts/kickLocation.txt", "r")
+kick = kickfile.read()
 path = data_in["path"]
 settings = data_in["settings"]
 planName = data_in["planName"][path.rfind("/")+1 : ]

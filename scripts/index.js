@@ -29,9 +29,6 @@ const passesTable = document.querySelector("#passesTable");
 const taskTable = document.querySelector("#taskTable");
 const slavesTable = document.querySelector("#slavesTable");
 
-//Kick location
-const kickLocation = "C:/Program Files/Autodesk/Arnold/maya2023/bin"
-
 let rendersQueue = [];
 let isRendering = false;
 
@@ -860,7 +857,6 @@ function renderCurrent(planSelected, passesSelected, currentFrame, endFrame, nbF
     let fileOutputName = passesTableObj.passesLists[planSelected][passesSelected].get("Name");
 
     let command = JSON.stringify({
-        kick : kickLocation,
         path: plansTableObj.rows[planSelected].get("Path"),
         frame: currentFrame,
         planName: plansTableObj.rows[planSelected].get("Path"),
