@@ -5,7 +5,7 @@ html, body{
     padding: 0;
     margin: 0;
     overflow: hidden;
-    
+    font-size: .5rem;
     
 }
 
@@ -30,14 +30,14 @@ html, body{
     display: grid;
     width: 100%;
     height: 100%;
-    grid-gap: 5px;
-    grid-template-columns: 70px 20% 45% auto;
+    grid-gap: .1cm;
+    grid-template-columns: 1cm 20% 45% auto;
 
 }
 
 .mainDiv > div{
 
-    border: 2px solid #3a3a3a;
+    border: .05cm solid #3a3a3a;
 
 }
 
@@ -129,15 +129,15 @@ html, body{
 
      
     list-style: none;
-    padding-bottom: 8px;
-    padding-top: 8px;
+    padding-bottom: 2pt;
+    padding-top: 2pt;
     border-bottom: 1px solid black;
 
 }
 
 .filter-save{
        
-    width: 90%;
+    width: 80%;
     height : auto;
     filter: invert(83%) sepia(0%) saturate(7489%) hue-rotate(113deg) brightness(103%) contrast(99%);
 
@@ -159,7 +159,8 @@ h1{
 
     padding: 0;
     margin: 0;
-    padding-top: 10px;
+    padding-top: .03cm;
+    padding-bottom: .03cm;
     font-family: system-ui;
     font-size: 2rem;
     text-align: center;
@@ -171,8 +172,8 @@ h1{
 
 .AddRemoveBox{
 
-    padding-left: 3px;    
-    height: 50px;
+    padding-left: .1cm;    
+    height: .6cm;
     background-color: #3a3a3a;
     display: flex;
 
@@ -182,9 +183,10 @@ h1{
 
     margin: 0;
     padding: 0;
-    margin-top: 6px;
+    margin-top: .075cm;
     display: flex;
     justify-content: flex-start;
+    
     
 
 }
@@ -196,20 +198,20 @@ h1{
     justify-content: center;
     list-style: none;    
     padding: 0;
-    height: 36px;
-    width: 36px;
-    margin-right: 4px;
+    height: .45cm;
+    width: .45cm;
+    margin-right: .1cm;
     background-color: #1a1a1a;
-    border-radius: 8px;
+    border-radius: .3em;
 }
 
 #renderBtn, #renderAllBtn{
-    margin-left: 10px;
-    padding-bottom: 2px;
+    margin-left: .1cm;
+    padding-top: 0;
     font-family: system-ui;
-    height: 36px;
-    width: 150px;
-    font-size: 1.4rem;
+    height: .45cm;
+    width: 2.2cm;
+    font-size: 1.3rem;
     text-align: center;
     color: #d9d9d9;
     background-color: #292929;
@@ -234,15 +236,15 @@ h1{
 
     margin: 0;
     padding: 0;
-    width: 60%;
+    width: 40%;
     height: 70%;
     float: right;
-    margin-top: 6px; 
-    padding-left: 5px;    
-    margin-right: 7px;
+    margin-top: .125cm; 
+    padding-left: .15cm;    
+    margin-right: .1cm;
     margin-left: auto;
     border: 0;
-    border-radius: 8px;
+    border-radius: .5em;
     color: #d9d9d9;
     background-color: #1a1a1a;
     font-size: 1.2rem;
@@ -251,7 +253,7 @@ h1{
 .outputFileDiv{
     width: 100%;
     padding: 0;
-    padding-left: 30%;
+    padding-left: 20%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -268,25 +270,26 @@ h1{
 
 .outputFileDiv p{
     font-family: system-ui;
-    padding-right: 15px;
-    font-size: 1.6rem;
+    padding-right: .2cm;
+    font-size: 1.4rem;
     width: fit-content;
     vertical-align: middle;
 }
 
 .outputFileDiv button{
-    width: 40px;
-    height: 40px;
+    width: .45cm;
+    height: .45cm;
+    padding-top: .025cm;
     background-color: #1a1a1a;
 }
 
 .outputFileDiv input{
 
-    width: 250px;
+    width: 2cm;
     margin: 0;
     padding: 0;
-    height: 40px;
-    padding-left: 5px;
+    height: .45cm;
+    padding-left: .05cm;
     margin-left: auto;
     border: 0;
     border-radius: .2em 0 0 .2em;
@@ -302,9 +305,9 @@ h1{
 
     padding: 0;
     margin: 0;
-    padding-top: 4px;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding-top: .1cm;
+    padding-left: .1cm;
+    padding-right: .1cm;
 
 }
 
@@ -326,9 +329,9 @@ h1{
 
 .tableList th:not(:empty){
 
-    height: 32px;
-    padding-left: 10px;
-    padding-right: 10px;
+    height: .5cm;
+    padding-left: .1cm;
+    padding-right: .1cm;
     font-family: system-ui;
     font-weight: normal;
     font-size: 1.2rem;
@@ -339,11 +342,10 @@ h1{
 
 .tableList td{
 
-    height: 40px;
-    padding-top: 2px;
-    padding-left: 5px;
+    height: .45cm;
+    /* padding-top: .02cm; */
     font-family: system-ui;
-    font-size: 1.7rem;
+    font-size: 1.2rem;
     text-align: center;
     color: #d9d9d9;
 }
@@ -360,27 +362,27 @@ h1{
 
 .tableList th:empty{
 
-    width: 3px;
-    max-width: 3px;
-    min-width: 3px;
+    width: .04cm;
+    max-width: .04cm;
+    min-width: .04cm;
 
 }
 
 
 .tableSeparation td:empty{
 
-    height: 2px;
+    height: .02cm;
     background-color: rgba(0, 0, 0, 0);
 
 }
 
-.softwareIcon{
+/* .softwareIcon{
 
     width: 25px;
     height: auto;
     padding-top: 2px;
 
-}
+} */
 
 *:focus {
     outline: none;
