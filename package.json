@@ -2,9 +2,13 @@
   "name": "batchrendering",
   "version": "1.0.0",
   "main": "main.js",
+  "build": {
+    "appId": "myApp",
+    "extraResources": "python_scripts"
+  },
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager . batchRendering"
+    "dist": "electron-builder"
   },
   "devDependencies": {
     "electron": "^26.2.1",

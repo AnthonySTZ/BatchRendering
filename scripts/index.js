@@ -869,7 +869,7 @@ function renderCurrent(planSelected, passesSelected, currentFrame, endFrame, nbF
         settings: sceneSettings
     });
 
-    const renderProcess = spawn('python',["scripts/render.py", command]);
+    const renderProcess = spawn('python',["resources/python_scripts/render.py", command]);
     renderProcess.stdout.pipe(process.stdout);
 
     renderProcess.on('exit', function() {
@@ -1036,7 +1036,7 @@ saveBtn.addEventListener("click", () => { //Save Button
     // const data_to_pass = createTablesData(tablesObjList);
     let dataToPass = createSaveData();
 
-    const saveProcess = spawn('python',["scripts/save.py", dataToPass]);
+    const saveProcess = spawn('python',["resources/python_scripts/save.py", dataToPass]);
     saveProcess.stdout.on('data', (data) => {
         console.log(data.toString('utf8'));
     });
@@ -1046,7 +1046,7 @@ saveBtn.addEventListener("click", () => { //Save Button
 
 openBtn.addEventListener("click", () => { //Open Button
 
-    const openProcess = spawn('python',["scripts/open.py"]);
+    const openProcess = spawn('python',["resources/python_scripts/open.py"]);
     openProcess.stdout.on('data', (data) => {
         // let datas = getDataFromSave(data.toString('utf8'));
 
@@ -1336,9 +1336,9 @@ renderAllBtn.addEventListener("click", () => {
 
 // ------------------- OUTPUT FILE -------------------------- //
 outputFileBtn.addEventListener("click", () => {
-
-    const saveProcess = spawn('python',["scripts/select_folder.py"]);
-    saveProcess.stdout.on('data', (data) => {
+    
+    const fileProcess = spawn('python',["resources/python_scripts/select_folder.py"]);
+    fileProcess.stdout.on('data', (data) => {
 
         data = data.toString('utf8');
         console.log(data);
