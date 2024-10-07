@@ -10,3 +10,13 @@ The Application is divided into 5 sections, Save/Open, Plans, Passes/AOVs, Tasks
 
 ## Plans Section
 
+You can click on the **+** button to add a new arnold file.
+You can also click on the **-** button to remove the selected plan.
+
+![Main](./assets/readme/add_plan.jpg)
+
+You can set an **output** folder on top of the section, this will be the folder where all renders will be written.
+
+![Main](./assets/readme/plans.jpg)
+
+## Passes Section
