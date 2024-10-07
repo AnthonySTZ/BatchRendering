@@ -10,14 +10,14 @@ The Application is divided into 5 sections, Save/Open, Plans, Passes/AOVs, Tasks
 
 ## Plans Section
 
+![Plan](./assets/readme/plans.jpg)
+
 You can click on the **+** button to add a new arnold file.
 You can also click on the **-** button to remove the selected plan.
 
 ![Add Plan](./assets/readme/add_plan.jpg)
 
 You can set an **output** folder on top of the section, this will be the folder where all renders will be written.
-
-![Plan](./assets/readme/plans.jpg)
 
 ## Passes Section
 
@@ -40,4 +40,4 @@ Then you can **select** the desired pass to render and click **render**, or you 
 Once you've clicked on the **render** button. It will add a new render in the tasks section. You will see the render progression for each pass.
 You can also stop a render by clicking on the **-** button.
 
-![Tasks](./assets/readme/passes_settings.jpg)
+![Tasks](./assets/readme/tasks.jpg)
